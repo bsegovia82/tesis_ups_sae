@@ -1,0 +1,503 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorAnio.tituloPagina}</title>
+	</ui:define>
+
+	<ui:define name="title">
+		#{beanMantenedorAnio.tituloPagina}
+	</ui:define>
+
+	<ui:define name="subheader">
+       #{beanMantenedorAnio.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorAnio.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorAnio.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Periodo:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Periodo"
+					value="#{beanMantenedorAnio.entidadRegistrar.lPeriodo}"
+					onblur="ChangeCase(this);" required="true" id="Periodo" />
+
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Año:" />
+				</div>
+
+				<p:spinner styleClass="Wid70" placeholder="Año" min="2010"
+					max="3000" stepFactor="1"
+					value="#{beanMantenedorAnio.entidadRegistrar.lAnio}"
+					required="true" id="Anio">
+				</p:spinner>
+
+
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Fecha Inicio:" />
+				</div>
+				<p:calendar styleClass="Wid70" placeholder="Fecha Inicio"
+					value="#{beanMantenedorAnio.entidadRegistrar.lFechaInicio}"
+					required="true" id="fechaInicio">
+				</p:calendar>
+
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Fecha Fin:" />
+				</div>
+				<p:calendar styleClass="Wid70" placeholder="Fecha Fin"
+					value="#{beanMantenedorAnio.entidadRegistrar.lFechaFin}"
+					required="true" id="fechaFin">
+				</p:calendar>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* observacion:" />
+				</div>
+				<p:inputTextarea styleClass="Wid70" placeholder="Observación"
+					required="true" id="observacion" onblur="ChangeCase(this);"
+					value="#{beanMantenedorAnio.entidadRegistrar.observacion}">
+
+				</p:inputTextarea>
+			</pe:fluidGridItem>
+		</p:panelGrid>
+		<p:commandButton value="Limpiar" styleClass="red-btn"
+			style="margin-bottom:5px;" update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorAnio.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorAnio.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorAnio.listaEntidades}" var="anio"
+			emptyMessage="#{beanMantenedorAnio.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+			<p:column filterBy="#{anio.lAnio}" footerText="Anio">
+				<h:outputText value="#{anio.lAnio}" />
+			</p:column>
+
+			<p:column headerText="Periodo">
+				<h:outputText value="#{anio.lPeriodo}" />
+			</p:column>
+
+			<p:column headerText="Fecha Inicio">
+				<h:outputText value="#{anio.lFechaInicio}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorAnio.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Fecha Fin">
+				<h:outputText value="#{anio.lFechaFin}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorAnio.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Estado">
+				<h:outputText
+					value="#{anio.estado eq beanMantenedorAnio.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+
+
+			<p:column headerText="Acciones" width="15%">
+
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank"
+					style="border : none; background : none;">
+
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorAnio.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorAnio.nombreAtributoCambioEstado}"
+							value="#{anio}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorAnio.cambiarEstado}"
+						update="@form" process="@this">
+
+						<i class="fa fa-exchange Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorAnio.nombreAtributoCambioEstado}"
+							value="#{anio}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+					<p:commandLink title="Agregar Curso"
+						actionListener="#{beanMantenedorAnio.actualizarEntidad}"
+						update=":#{p:component('dialogoCurso')}" process="@this">
+
+						<i class="fa fa-gear Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorAnio.nombreAtributoCambioEstado}"
+							value="#{anio}"></f:attribute>
+
+						<f:attribute
+							name="#{beanMantenedorAnio.nombreAtributoDialogoAlterno}"
+							value="dialogoCurso"></f:attribute>
+					</p:commandLink>
+
+					<p:commandLink title="Agregar Materias"
+						actionListener="#{beanMantenedorAnio.actualizarEntidad}"
+						update=":#{p:component('dialogoMateria')}" process="@this">
+
+						<i class="fa fa-check Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorAnio.nombreAtributoCambioEstado}"
+							value="#{anio}"></f:attribute>
+
+						<f:attribute
+							name="#{beanMantenedorAnio.nombreAtributoDialogoAlterno}"
+							value="dialogoMateria"></f:attribute>
+					</p:commandLink>
+
+				</p:panelGrid>
+			</p:column>
+		</p:dataTable>
+	</ui:define>
+
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorAnio.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorAnio.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Periodo:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Periodo"
+					value="#{beanMantenedorAnio.entidadRegistrar.lPeriodo}"
+					onblur="ChangeCase(this);" required="true" id="Periodo" />
+
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Año:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Año"
+					value="#{beanMantenedorAnio.entidadRegistrar.lAnio}"
+					onblur="ChangeCase(this);" required="true" id="Anio" />
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Fecha Inicio:" />
+				</div>
+				<p:calendar styleClass="Wid70" placeholder="Fecha Inicio"
+					value="#{beanMantenedorAnio.entidadRegistrar.lFechaInicio}"
+					required="true" id="fechaInicio">
+				</p:calendar>
+
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Fecha Fin:" />
+				</div>
+				<p:calendar styleClass="Wid70" placeholder="Fecha Fin"
+					value="#{beanMantenedorAnio.entidadRegistrar.lFechaFin}"
+					required="true" id="fechaFin">
+				</p:calendar>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* observacion:" />
+				</div>
+				<p:inputTextarea styleClass="Wid70" placeholder="Observación"
+					required="true" id="observacion"
+					value="#{beanMantenedorAnio.entidadRegistrar.observacion}">
+
+				</p:inputTextarea>
+			</pe:fluidGridItem>
+		</p:panelGrid>
+
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorAnio.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorAnio.eventoControlCierreDialogo}" />
+	</ui:define>
+
+	<ui:define name="ventanas_adicionales">
+
+		<p:dialog id="dialogoCurso" widgetVar="dialogoCurso" modal="true"
+			height="300" width="600"
+			header="Cursos por año lectivo #{beanMantenedorAnio.entidadRegistrar.lAnio} "
+			showHeader="true">
+			<p:panel style="border:0px !important; background:none;"
+				id="panelSeleccionCursos">
+				<p:pickList id="listaCursos"
+					value="#{beanMantenedorAnio.listaSeleccionCurso}" var="curso"
+					effect="bounce" itemValue="#{curso}" itemLabel="#{curso}"
+					showSourceControls="true" showTargetControls="true"
+					showCheckbox="true" responsive="true" showSourceFilter="true"
+					showTargetFilter="true" filterMatchMode="contains">
+
+					<f:facet name="sourceCaption">Cursos por asignar</f:facet>
+					<f:facet name="targetCaption">Cursos Asignados</f:facet>
+					<p:ajax event="transfer"
+						listener="#{beanMantenedorAnio.controlTransferencia}"
+						update="panelSeleccionCursos" />
+
+					<p:column style="width:90%;">
+						<h:outputText value="#{curso}" />
+					</p:column>
+				</p:pickList>
+			</p:panel>
+		</p:dialog>
+
+
+
+		<p:dialog id="dialogoMateria" widgetVar="dialogoMateria" modal="true"
+			width="70%" style="height : 70% !important"
+			header="Materias por año lectivo #{beanMantenedorAnio.entidadRegistrar.lAnio} "
+			showHeader="true">
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12 ui-lg-4">
+					<p:tabView id="Materias">
+						<p:tab id="contenedorFmr" title="Datos Materias">
+							<div class="card no-margin">
+								<p:growl id="mensajeError"></p:growl>
+								<h2>Seleccione Materias</h2>
+								<p:panelGrid columns="1" layout="grid"
+									style="border:0px !important; background:none;"
+									id="frmAnioCurso">
+
+									<pe:fluidGridItem type="input">
+										<div class="dynaFormLabel">
+											<p:outputLabel value="* Curso:" />
+										</div>
+
+										<p:selectOneMenu id="Curso"
+											value="#{beanMantenedorAnio.lMateriaCursoAnio.lCursoAnio.id}"
+											style="width:180px;" required="true"
+											requiredMessage="Debe seleccionar el curso">
+											<f:selectItem itemLabel="Curso" noSelectionOption="true" />
+											<f:selectItems value="#{beanMantenedorAnio.lListaCursoAnio}"
+												var="curso" itemLabel="#{curso.lCurso.lNombreCurso}"
+												itemValue="#{curso.id}" />
+										</p:selectOneMenu>
+
+									</pe:fluidGridItem>
+
+									<pe:fluidGridItem type="input">
+										<div class="dynaFormLabel">
+											<p:outputLabel value="* Docente:" />
+										</div>
+
+										<p:selectOneMenu id="Docente"
+											value="#{beanMantenedorAnio.lMateriaCursoAnio.lDocente.id}"
+											style="width:180px;" required="true"
+											requiredMessage="Debe seleccionar el docente">
+											<f:selectItem itemLabel="Docente" noSelectionOption="true" />
+											<f:selectItems value="#{beanMantenedorAnio.lListaDocente}"
+												var="docente" itemLabel="#{docente.nombreCompleto}"
+												itemValue="#{docente.id}" />
+										</p:selectOneMenu>
+
+									</pe:fluidGridItem>
+
+									<pe:fluidGridItem type="input">
+										<div class="dynaFormLabel">
+											<p:outputLabel value="* Materia:" />
+										</div>
+
+										<p:selectOneMenu id="Materia"
+											value="#{beanMantenedorAnio.lMateriaCursoAnio.lMateria.id}"
+											style="width:180px;" required="true"
+											requiredMessage="Debe seleccionar la materia">
+											<f:selectItem itemLabel="Materia" noSelectionOption="true" />
+											<f:selectItems value="#{beanMantenedorAnio.lListaMateria}"
+												var="materia" itemLabel="#{materia.lDescripcionMateria}"
+												itemValue="#{materia.id}" />
+										</p:selectOneMenu>
+
+									</pe:fluidGridItem>
+
+
+									<pe:fluidGridItem type="input">
+										<div class="dynaFormLabel">
+											<p:outputLabel value="* Tipo Calificación:" />
+										</div>
+
+										<p:selectOneMenu id="TipoCalificacion"
+											value="#{beanMantenedorAnio.lMateriaCursoAnio.lTipoCalificacion.id}"
+											style="width:180px;" required="true"
+											requiredMessage="Debe seleccionar el tipo de calificación">
+											<f:selectItem itemLabel="Tipo Calificación"
+												noSelectionOption="true" />
+											<f:selectItems
+												value="#{beanMantenedorAnio.lListaCalificacion}"
+												var="calificacion"
+												itemLabel="#{calificacion.lDescripcionTipo}"
+												itemValue="#{calificacion.id}" />
+										</p:selectOneMenu>
+
+									</pe:fluidGridItem>
+
+								</p:panelGrid>
+
+								<p:commandButton value="Limpiar" styleClass="red-btn"
+									style="margin-bottom:5px;" update="frmAnioCurso"
+									process="@this">
+									<p:resetInput target="frmAnioCurso" />
+								</p:commandButton>
+
+								<p:commandButton value="Registrar" styleClass="CyanButton"
+									actionListener="#{beanMantenedorAnio.guardarOActualizarMateria}"
+									process=":#{p:component('contenedorFmr')}"
+									update=":#{p:component('tablaDatosMaterias')}, :#{ p:component('mensajeError')}, :#{ p:component('frmAnioCurso')}" />
+							</div>
+						</p:tab>
+					</p:tabView>
+				</div>
+				<div class="ui-g-12 ui-lg-8">
+					<p:tabView id="MateriasRegistradas">
+						<p:tab id="tablaMaterias" title="Datos Materias">
+							<div class="card no-margin">
+								<h2>Materias registradas</h2>
+
+								<p:dataTable
+									value="#{beanMantenedorAnio.lListaMateriaCursoAnio}"
+									var="materiaCursoAnio"
+									emptyMessage="#{beanMantenedorAnio.mensajeTablaVacia}" rows="8"
+									reflow="true" paginator="true" paginatorPosition="bottom"
+									id="tablaDatosMaterias" paginatorAlwaysVisible="false">
+
+
+									<p:column
+										filterBy="#{materiaCursoAnio.lCursoAnio.lAnioLectivo.lAnio}"
+										footerText="Anio">
+										<h:outputText
+											value="#{materiaCursoAnio.lCursoAnio.lAnioLectivo.lAnio}" />
+									</p:column>
+
+									<p:column
+										filterBy="#{materiaCursoAnio.lCursoAnio.lCurso.lNombreCurso}"
+										footerText="Curso">
+										<h:outputText
+											value="#{materiaCursoAnio.lCursoAnio.lCurso.lNombreCurso}" />
+									</p:column>
+
+									<p:column
+										filterBy="#{materiaCursoAnio.lDocente.nombreCompleto}"
+										footerText="Docente">
+										<h:outputText
+											value="#{materiaCursoAnio.lDocente.nombreCompleto}" />
+									</p:column>
+
+									<p:column
+										filterBy="#{materiaCursoAnio.lMateria.lDescripcionMateria}"
+										footerText="Materia">
+										<h:outputText
+											value="#{materiaCursoAnio.lMateria.lDescripcionMateria}" />
+									</p:column>
+
+									<p:column
+										filterBy="#{materiaCursoAnio.lTipoCalificacion.lDescripcionTipo}"
+										footerText="Tipo Calificación">
+										<h:outputText
+											value="#{materiaCursoAnio.lTipoCalificacion.lDescripcionTipo}" />
+									</p:column>
+
+									<p:column headerText="Estado">
+										<h:outputText
+											value="#{materiaCursoAnio.estado eq beanMantenedorAnio.estadoActivo?'ACTIVO':'INACTIVO'}" />
+									</p:column>
+
+									<p:column headerText="Acciones" width="10%">
+
+
+										<p:commandLink title="Cambiar Estado"
+											actionListener="#{beanMantenedorAnio.cambiarEstadoMateriaAnio}"
+											update=":#{p:component('tablaDatosMaterias')}" process="@this">
+
+											<i class="fa fa-exchange Fs20 BoldGray DispBlock"> </i>
+											<f:attribute
+												name="MATERIA_CURSO"
+												value="#{materiaCursoAnio}"></f:attribute>
+
+											<p:confirm header="Confirmación"
+												message="Seguro que desea realizar esta operación?"
+												icon="ui-icon-alert" />
+										</p:commandLink>
+
+									</p:column>
+
+								</p:dataTable>
+
+							</div>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+
+		</p:dialog>
+
+
+	</ui:define>
+
+	<ui:define name="TITULO_PAGINA_NAVEGACION">
+
+	</ui:define>
+
+</ui:composition>

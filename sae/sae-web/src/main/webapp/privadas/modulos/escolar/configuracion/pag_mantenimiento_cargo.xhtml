@@ -1,0 +1,200 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorCargo.tituloPagina}</title>
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorCargo.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorCargo.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorCargo.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Nombre Cargo:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Nombres"
+					value="#{beanMantenedorCargo.entidadRegistrar.nombreCargo}"
+					onblur="ChangeCase(this);" required="true" id="Nombres" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Descripción:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Descripción"
+					value="#{beanMantenedorCargo.entidadRegistrar.observacion}"
+					onblur="ChangeCase(this);" required="true" id="Descripción" />
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Cargo:" />
+				</div>
+				<p:selectOneMenu id="Rol"
+					value="#{beanMantenedorCargo.entidadRegistrar.rolDefault.id}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="ROL" noSelectionOption="true" />
+					<f:selectItems value="#{beanMantenedorCargo.listaRoles}" var="rol"
+						itemLabel="#{rol.rol}" itemValue="#{rol.id}" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+
+			<h:outputText value=" " />
+
+
+		</p:panelGrid>
+		<p:commandButton value="Limpiar" styleClass="red-btn" style="margin-bottom:5px;" 
+			update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorCargo.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorCargo.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorCargo.listaEntidades}" var="cargo"
+			emptyMessage="#{beanMantenedorCargo.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+
+			<p:column headerText="Nombre Cargo" width="20%">
+				<h:outputText value="#{cargo.nombreCargo}" />
+			</p:column>
+
+			<p:column headerText="Descripción" width="20%">
+				<h:outputText value="#{cargo.observacion}" />
+			</p:column>
+
+			<p:column headerText="Rol" width="20%">
+				<h:outputText value="#{cargo.rolDefault.rol}"
+					rendered="#{cargo.rolDefault != null}" />
+			</p:column>
+
+			<p:column headerText="Estado" width="8%">
+				<h:outputText
+					value="#{cargo.estado eq beanMantenedorCargo.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+
+			<p:column headerText="Fecha Registro">
+				<h:outputText value="#{cargo.fechaRegistro}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorCargo.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Acciones" width="10%">
+
+				<p:panelGrid columns="2" layout="grid"
+					style="border : none; background : none;">
+
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorCargo.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorCargo.nombreAtributoCambioEstado}"
+							value="#{cargo}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorCargo.cambiarEstado}"
+						update="@form" process="@this">
+
+						<i class="icon-settings_backup_restore Fs20 BoldGray DispBlock">
+						</i>
+						<f:attribute
+							name="#{beanMantenedorCargo.nombreAtributoCambioEstado}"
+							value="#{cargo}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+				</p:panelGrid>
+			</p:column>
+
+		</p:dataTable>
+	</ui:define>
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorCargo.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorCargo.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Nombre Cargo:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Nombres"
+					value="#{beanMantenedorCargo.entidadRegistrar.nombreCargo}"
+					onblur="ChangeCase(this);" required="true" id="Nombres" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Descripción:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Descripción"
+					value="#{beanMantenedorCargo.entidadRegistrar.observacion}"
+					onblur="ChangeCase(this);" required="true" id="Descripción" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Cargo:" />
+				</div>
+				<p:selectOneMenu id="Rol"
+					value="#{beanMantenedorCargo.entidadRegistrar.rolDefault.id}"
+					style="width:180px;" required="true">
+					<f:selectItem itemLabel="ROL" noSelectionOption="true" />
+					<f:selectItems value="#{beanMantenedorCargo.listaRoles}" var="rol"
+						itemLabel="#{rol.rol}" itemValue="#{rol.id}" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+
+			<h:outputText value=" " />
+		</p:panelGrid>
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorCargo.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+
+	</ui:define>
+	
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}" listener="#{beanMantenedorCargo.eventoControlCierreDialogo}" />
+	</ui:define>
+
+</ui:composition>

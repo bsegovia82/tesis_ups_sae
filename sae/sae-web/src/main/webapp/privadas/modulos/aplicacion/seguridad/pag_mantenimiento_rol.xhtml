@@ -1,0 +1,335 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorRol.tituloPagina}</title>
+	</ui:define>
+	
+	<ui:define name="title">
+		#{beanMantenedorRol.tituloPagina}
+	</ui:define>
+	
+	<ui:define name="subheader">
+       #{beanMantenedorRol.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorRol.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorRol.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Nombre Rol:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Rol"
+					value="#{beanMantenedorRol.entidadRegistrar.rol}"
+					onblur="ChangeCase(this);" required="true" id="Rol" />
+
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Descripción:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Descripción"
+					value="#{beanMantenedorRol.entidadRegistrar.observacion}"
+					onblur="ChangeCase(this);" required="true" id="Descripción" />
+			</pe:fluidGridItem>
+			
+			
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Ámbito:" />
+				</div>
+				<p:selectOneMenu id="Ambito"
+					value="#{beanMantenedorRol.entidadRegistrar.ambito}"
+					style="width:180px;" required="true" label="Seleccionable">
+					<f:selectItem itemLabel="Sólo Administrador" itemValue="AD" />
+					<f:selectItem itemLabel="Sólo Empresa" itemValue="E" />
+					<f:selectItem itemLabel="Ambos" itemValue="A" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Aplica Auditoria:" />
+				</div>
+				<p:selectOneMenu id="AplicaAuditoria"
+					value="#{beanMantenedorRol.entidadRegistrar.aplicaAud}"
+					style="width:180px;" required="true" label="Aplica Auditoria">
+					<f:selectItem itemLabel="Seleccione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="SI" itemValue="S" />
+					<f:selectItem itemLabel="NO" itemValue="N" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Seleccionable:" />
+				</div>
+				<p:selectOneMenu id="Seleccionable"
+					value="#{beanMantenedorRol.entidadRegistrar.seleccionable}"
+					style="width:180px;" required="true" label="Seleccionable">
+					<f:selectItem itemLabel="Seleccione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="SI" itemValue="S" />
+					<f:selectItem itemLabel="NO" itemValue="N" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Página Inicio:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Página Inicio"
+					value="#{beanMantenedorRol.entidadRegistrar.lPaginaPrincipal}"
+					required="true" id="paginaInicio" />
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Seleccione las opciones:" />
+				</div>
+				<p:selectCheckboxMenu id="Opciones"
+					value="#{beanMantenedorRol.opcionesSeleccionadas}"
+					label="Permiso Opciones" filter="true" filterMatchMode="startsWith"
+					panelStyle="width:250px" required="true">
+					<f:selectItems value="#{beanMantenedorRol.listaOpcionesTerminales}"
+						var="opcion" itemLabel="#{opcion.descripcion}"
+						itemValue="#{opcion.id}" />
+				</p:selectCheckboxMenu>
+			</pe:fluidGridItem>
+		</p:panelGrid>
+		<p:commandButton value="Limpiar"  styleClass="red-btn" style="margin-bottom:5px;" 
+			update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorRol.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorRol.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorRol.listaEntidades}" var="rol"
+			emptyMessage="#{beanMantenedorRol.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+			<p:column filterBy="#{rol.rol}" footerText="Nombre Rol">
+				<h:outputText value="#{rol.rol}" />
+			</p:column>
+
+			<p:column headerText="Descripción">
+				<h:outputText value="#{rol.observacion}" />
+			</p:column>
+
+			<p:column headerText="Estado">
+				<h:outputText
+					value="#{rol.estado eq beanMantenedorRol.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+			<p:column headerText="Fecha Registro">
+				<h:outputText value="#{rol.fechaRegistro}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorRol.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Acciones" width="10%" >
+
+				<p:panelGrid columns="2"  layout="grid" styleClass="ui-panelgrid-blank"
+					style="border : none; background : none;" >
+
+					<p:commandLink title="Actualizar" 
+						actionListener="#{beanMantenedorRol.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorRol.nombreAtributoCambioEstado}"
+							value="#{rol}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorRol.cambiarEstado}" update="@form"
+						process="@this">
+
+						<i class="fa fa-exchange Fs20 BoldGray DispBlock">
+						</i>
+						<f:attribute
+							name="#{beanMantenedorRol.nombreAtributoCambioEstado}"
+							value="#{rol}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+
+					<p:commandLink id="opcionesAsignadas"
+						title="Ver las opciones asignados" 
+						oncomplete="PF('dialogoMantenimientoOpcionesRoles').show()"
+						actionListener="#{beanMantenedorRol.seleccionarEntidad}" 
+						update=":#{p:component('dialogoMantenimientoOpcionesRoles')}" process="@this"
+						>
+						
+						<i class="fa fa-server Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorRol.nombreAtributoCambioEstado}"
+							value="#{rol}"></f:attribute>
+					</p:commandLink>
+					
+					<p:commandLink id="menu" title="Menú por rol"
+						oncomplete="PF('dialogoVerMenu').show()"
+						actionListener="#{beanMantenedorRol.seleccionarEntidad}"
+						update=":#{p:component('dialogoVerMenu')}"
+						process="@this">
+
+						<i class="fa fa-sort-numeric-asc Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorRol.nombreAtributoCambioEstado}"
+							value="#{rol}"></f:attribute>
+					</p:commandLink>
+					
+					
+				</p:panelGrid>
+			</p:column>
+		</p:dataTable>
+	</ui:define>
+
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorRol.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorRol.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Rol:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Rol"
+					value="#{beanMantenedorRol.entidadRegistrar.rol}"
+					onblur="ChangeCase(this);" required="true" id="Rol" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Descripción:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Descripción"
+					value="#{beanMantenedorRol.entidadRegistrar.observacion}"
+					onblur="ChangeCase(this);" required="true" id="Descripción" />
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Ámbito:" />
+				</div>
+				<p:selectOneMenu id="Ambito"
+					value="#{beanMantenedorRol.entidadRegistrar.ambito}"
+					style="width:180px;" required="true" label="Seleccionable">
+					<f:selectItem itemLabel="Sólo Administrador" itemValue="AD" />
+					<f:selectItem itemLabel="Sólo Empresa" itemValue="E" />
+					<f:selectItem itemLabel="Ambos" itemValue="A" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Aplica Auditoria:" />
+				</div>
+
+				<p:selectOneMenu id="AplicaAuditoria"
+					value="#{beanMantenedorRol.entidadRegistrar.aplicaAud}"
+					style="width:180px;" required="true" label="Aplica Auditoria">
+					<f:selectItem itemLabel="Seleccione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="SI" itemValue="S" />
+					<f:selectItem itemLabel="NO" itemValue="N" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+			<h:outputText value="" />
+
+		</p:panelGrid>
+
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorRol.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+	</ui:define>
+	
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}" listener="#{beanMantenedorRol.eventoControlCierreDialogo}" />
+	</ui:define>
+
+	<ui:define name="ventanas_adicionales">
+		<p:dialog widgetVar="dialogoMantenimientoOpcionesRoles" modal="true"
+			height="300" id="dialogoMantenimientoOpcionesRoles" width="600" header="Opciones asignadas para el rol : #{beanMantenedorRol.entidadRegistrar.rol}" showHeader="true">
+			<p:panel 
+				style="border:0px !important; background:none;"
+				id="panelSeleccionOpciones">
+				<p:pickList id="listaOpciones" value="#{beanMantenedorRol.listaSeleccionOpcion}"
+					var="opcion" effect="bounce" itemValue="#{opcion}"
+					itemLabel="#{opcion}" showSourceControls="true"
+					showTargetControls="true" showCheckbox="true" responsive="true"
+					showSourceFilter="true" showTargetFilter="true"
+					filterMatchMode="contains" >
+
+					<f:facet name="sourceCaption">Opciones por asignar</f:facet>
+					<f:facet name="targetCaption">Opciones Asignadas</f:facet>
+					<p:ajax event="transfer" listener="#{beanMantenedorRol.controlTransferencia}" update="panelSeleccionOpciones" />
+					
+					<p:column style="width:90%;">
+						<h:outputText value="#{opcion}" />
+					</p:column>
+				</p:pickList>
+			</p:panel>
+			</p:dialog>
+			
+			
+			<p:dialog widgetVar="dialogoVerMenu" modal="true" height="250"
+			id="dialogoVerMenu" width="400" 
+			header="Previsuzalización del menu para el rol : #{beanMantenedorRol.entidadRegistrar.rol}"
+			showHeader="true">
+			<p:scrollPanel style="width:350px;height:200px">
+			<div class="menu">
+				<p:panelMenu model="#{beanMantenedorRol.model}" 
+					id="papMenuPrevisualizado">
+				</p:panelMenu>
+			</div>
+			</p:scrollPanel>
+			<p:ajax event="close" update=":#{p:component('panel')}"
+				listener="#{beanMantenedorRol.eventoControlCierreDialogo}" />
+		</p:dialog>
+			
+	</ui:define>
+	
+	<ui:define name="TITULO_PAGINA_NAVEGACION">
+		Mi Cafecito - Express
+	</ui:define>
+
+</ui:composition>

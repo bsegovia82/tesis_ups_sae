@@ -1,0 +1,50 @@
+{
+  "version": "v1",
+  "title": "jSparrow",
+  "timestamp": 1541101766152,
+  "ttl": 10080,
+  "helpUrl": "https://aer.ctrlflow.com/jsparrow/help",
+  "feedbackUrl": "https://www.codetrails.com/error-analytics/",
+  "aboutUrl": "https://www.codetrails.com/error-analytics/",
+  "submitUrl": "https://aer.ctrlflow.com/jsparrow/community/new",
+  "maxReportSize": 524288,
+  "problemsUrl": "https://aer.ctrlflow.com/jsparrow/downloads/problems.zip",
+  "problemsTtl": 20160,
+  "interestUrl": "https://aer.ctrlflow.com/jsparrow/community/interest",
+  "connectTimeout": 5,
+  "socketTimeout": 10,
+  "acceptedProducts": [
+    "*"
+  ],
+  "acceptedPlugins": [
+    "*",
+    "at.splendit.*",
+    "eu.jsparrow.*"
+  ],
+  "acceptedPackages": [
+    "at.splendit.*",
+    "ch.qos.*",
+    "com.oracle.*",
+    "com.sun.*",
+    "eu.jsparrow.*",
+    "java.*",
+    "javafx.*",
+    "javax.*",
+    "oracle.*",
+    "org.apache.*",
+    "org.eclipse.*",
+    "org.osgi.*",
+    "org.slf4j.*",
+    "sun.*"
+  ],
+  "requiredPackages": [
+    "at.splendit.*",
+    "eu.jsparrow.*"
+  ],
+  "acceptOtherPackages": true,
+  "acceptUiFreezes": true,
+  "ignoredStatuses": [
+    ":java.net.*:"
+  ],
+  "problemsZipLastDownloadTimestamp": 0
+}

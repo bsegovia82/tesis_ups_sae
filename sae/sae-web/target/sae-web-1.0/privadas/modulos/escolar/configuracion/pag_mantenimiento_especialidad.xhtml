@@ -1,0 +1,142 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorEspecialidad.tituloPagina}</title>
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorEspecialidad.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorEspecialidad.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorEspecialidad.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<p:inputText styleClass="Wid70" placeholder="Nombres"
+				value="#{beanMantenedorEspecialidad.entidadRegistrar.nombreEspecialidad}"
+				onblur="ChangeCase(this);" required="true" id="Nombres" />
+			<p:inputText styleClass="Wid70" placeholder="Descripción"
+				value="#{beanMantenedorEspecialidad.entidadRegistrar.observacion}"
+				onblur="ChangeCase(this);" required="true" id="Descripción" />
+
+		</p:panelGrid>
+		<p:commandButton value="Limpiar" styleClass="red-btn" style="margin-bottom:5px;" 
+			update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorEspecialidad.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorEspecialidad.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorEspecialidad.listaEntidades}"
+			var="especialidad"
+			emptyMessage="#{beanMantenedorEspecialidad.mensajeTablaVacia}"
+			rows="8" reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+
+			<p:column headerText="Nombre Especialidad" width="30%">
+				<h:outputText value="#{especialidad.nombreEspecialidad}" />
+			</p:column>
+
+			<p:column headerText="Descripción" width="30%">
+				<h:outputText value="#{especialidad.observacion}" />
+			</p:column>
+
+			<p:column headerText="Estado" width="8%">
+				<h:outputText
+					value="#{especialidad.estado eq beanMantenedorEspecialidad.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+
+			<p:column headerText="Fecha Registro">
+				<h:outputText value="#{especialidad.fechaRegistro}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorEspecialidad.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="Acciones" width="10%">
+				<p:panelGrid columns="2" layout="grid"
+					style="border : none; background : none;">
+
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorEspecialidad.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorEspecialidad.nombreAtributoCambioEstado}"
+							value="#{especialidad}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorEspecialidad.cambiarEstado}"
+						update="@form" process="@this">
+
+						<i class="icon-settings_backup_restore Fs20 BoldGray DispBlock">
+						</i>
+						<f:attribute
+							name="#{beanMantenedorEspecialidad.nombreAtributoCambioEstado}"
+							value="#{especialidad}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+				</p:panelGrid>
+			</p:column>
+
+		</p:dataTable>
+	</ui:define>
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorEspecialidad.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorEspecialidad.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<p:inputText styleClass="Wid70" placeholder="Nombres"
+				value="#{beanMantenedorEspecialidad.entidadRegistrar.nombreEspecialidad}"
+				onblur="ChangeCase(this);" required="true" id="Nombres" />
+			<p:inputText styleClass="Wid70" placeholder="Descripción"
+				value="#{beanMantenedorEspecialidad.entidadRegistrar.observacion}"
+				onblur="ChangeCase(this);" required="true" id="Descripción" />
+		</p:panelGrid>
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorEspecialidad.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+
+	</ui:define>
+	
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}" listener="#{beanMantenedorEspecialidad.eventoControlCierreDialogo}" />
+	</ui:define>
+
+</ui:composition>

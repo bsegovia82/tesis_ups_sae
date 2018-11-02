@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>Sistema de Administración Escolar</title>
+        <script type="text/javascript">
+	function ChangeCase(elem) {
+		elem.value = elem.value.toUpperCase();
+	}
+</script>
+    </h:head>
+
+    <h:body styleClass="login-body">
+        <div class="body-container">
+            <div class="ui-g">
+                <div class="ui-g-12 ui-lg-6 left-side">
+                    <p:graphicImage name="images/logo-academia.png" library="apollo-layout" styleClass="logo" />
+                    <h1>Bienvenido</h1>
+                    <p>
+                       Ingrese sus credenciales para iniciar sesión
+                    </p>
+                </div>
+                
+                <div class="ui-g-12 ui-lg-6 right-side">
+                    <div class="login-wrapper">   
+                        <div class="login-container">
+                            <h:form>
+                            <span class="title">Login</span>
+							<p:messages showDetail="false" closable="true"></p:messages>
+                            <div class="ui-g ui-fluid">
+                                <div class="ui-g-12">
+                                    <p:inputText placeholder="Usuario" value="#{beanLogin.usuario}"
+									onblur="ChangeCase(this);" required="true"
+									requiredMessage="Ingrese el usuario" />
+                                </div>
+                                <div class="ui-g-12">
+                                    <p:password type="password" placeholder="Clave" id="txtPassword"
+									value="#{beanLogin.clave}" required="true"
+									requiredMessage="Ingrese la clave" feedback="false" />
+                                </div>
+                                <div class="ui-g-6">
+                                    <p:commandButton value="Ingresar" icon="fa fa-sign-in"
+							action="#{beanLogin.login}" update="@form"></p:commandButton>
+                                </div>
+                              
+                            </div>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+		
+        <h:outputStylesheet name="css/layout-blue-light.css" library="apollo-layout" />
+    </h:body>
+
+</html>

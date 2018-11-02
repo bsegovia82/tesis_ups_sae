@@ -1,0 +1,32 @@
+package edu.sae.modulo.dominio.escolar;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import edu.sae.modulo.librerias.dominio.entidades.base.EntidadBaseAuditable;
+
+@Entity
+@Table(name = "SAE_ITEMS_CALIFICABLES")
+public class SaeItemsCalificables extends EntidadBaseAuditable<Long> implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private String lNota;
+	private String lRecomendaciones;
+	
+	
+	@Override
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public void setIdReferencia(Long idReferencia) {
+		super.setIdReferencia((Serializable)idReferencia);
+		
+	}
+
+	
+	
+}

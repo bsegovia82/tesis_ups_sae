@@ -1,0 +1,71 @@
+package edu.sae.modulo.dominio.escolar;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import edu.sae.modulo.librerias.dominio.entidades.base.EntidadBaseAuditable;
+
+@Entity
+@Table(name = "SAE_ITEMS_CALIFICABLES")
+public class SaeItemsCalificables extends EntidadBaseAuditable<Long> implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private String lNota;
+	private String lRecomendaciones;
+	
+	private SaeTipoItemsCalificables lTipoItem;
+	
+	
+	@GeneratedValue(generator = "secItemCalificable", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "secItemCalificable", allocationSize = 1, initialValue = 1, 
+	sequenceName = "SEC_ITEM_CAL")
+	@Id
+	@Column(name = "ID")
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public void setIdReferencia(Long idReferencia) {
+		super.setIdReferencia((Serializable)idReferencia);
+		
+	}
+
+	public String getlNota() {
+		return lNota;
+	}
+
+	public void setlNota(String lNota) {
+		this.lNota = lNota;
+	}
+
+	public String getlRecomendaciones() {
+		return lRecomendaciones;
+	}
+
+	public void setlRecomendaciones(String lRecomendaciones) {
+		this.lRecomendaciones = lRecomendaciones;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="ID_TIPO")
+	public SaeTipoItemsCalificables getlTipoItem() {
+		return lTipoItem;
+	}
+
+	public void setlTipoItem(SaeTipoItemsCalificables lTipoItem) {
+		this.lTipoItem = lTipoItem;
+	}
+
+	
+	
+}

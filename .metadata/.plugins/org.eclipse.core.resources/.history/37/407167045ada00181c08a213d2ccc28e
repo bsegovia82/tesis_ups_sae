@@ -1,0 +1,87 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/apollo"
+    xmlns:o="http://omnifaces.org/ui"
+    >
+	<h:form id="frmAccesosDirectos">
+    <div class="topbar clearfix">
+        <p:graphicImage class="logo" library="apollo-layout" name="images/logo-academia.png" />
+            
+        <a id="menu-button" href="#">
+            <i class="fa fa-align-left"></i>
+        </a>
+            
+        <a href="#" class="profile">
+            <span class="username">#{beanLogin.usuarioSession.usuarioSession.usuario}</span>    
+           <p:graphicImage
+			rendered="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia == null}"
+			name="images/usuarioDefault.png" library="apollo-layout" value="#"
+			styleClass="profile-image" style="border: 0 none" />
+		<o:graphicImage
+			rendered="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia != null}"
+			styleClass="profile-image"
+			value="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia}"
+			dataURI="true" style="border: 0 none" />
+            <i class="fa fa-angle-down"></i>
+        </a>
+        
+        <span class="topbar-search">
+            <input type="text" placeholder="Buscar"/>
+            <span class="fa fa-search"></span>
+        </span>
+        
+       
+        <ul class="topbar-menu fadeInDown">
+            <li>
+                <a href="#">
+                    <i class="topbar-icon fa fa-fw fa-user"></i>
+                    <span class="topbar-item-name">Perfil</span>
+                </a>
+                <ul>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-user"></i>
+                            <span>Mis Datos</span>
+                             <span class="topbar-badge">3</span>
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <h:commandLink action="#{beanLogin.logout}" title="Salir">
+                            <i class="fa fa-fw fa-sign-out"></i>
+                            <span>Logout</span>
+                             <span class="topbar-badge">3</span>
+                		</h:commandLink>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="topbar-icon fa fa-fw fa-cog"></i>
+                    <span class="topbar-item-name">Seguridad</span>
+                </a>
+                <ul>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-lock"></i>
+                            <span>Contraseña</span>
+                            <span class="topbar-badge">3</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+           
+           
+            <li class="topbar-search-item">
+                <span class="topbar-search">
+                    <input type="text" placeholder="Search"/>
+                    <span class="fa fa-search"></span>
+                </span>
+            </li>
+        </ul>
+    </div>
+</h:form>
+</ui:composition>

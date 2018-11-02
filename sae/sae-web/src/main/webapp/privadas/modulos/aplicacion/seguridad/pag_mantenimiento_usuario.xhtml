@@ -1,0 +1,387 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorUsuario.tituloPagina}</title>
+	</ui:define>
+
+	<ui:define name="title">
+		#{beanMantenedorUsuario.tituloPagina}
+	</ui:define>
+
+	<ui:define name="subheader">
+       #{beanMantenedorUsuario.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorUsuario.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorUsuario.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Usuario:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Usuario"
+					value="#{beanMantenedorUsuario.usuarioActual.usuario}"
+					onblur="ChangeCase(this);" required="true" id="Usuario" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Descripción:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Descripción"
+					value="#{beanMantenedorUsuario.usuarioActual.lDescripcion}"
+					onblur="ChangeCase(this);" required="true" id="Descripción" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Email:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Email"
+					value="#{beanMantenedorUsuario.usuarioActual.correo}"
+					required="true" validatorMessage="Email incorrecto" id="Email">
+					<f:validateRegex
+						pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"></f:validateRegex>
+				</p:inputText>
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Seleccione los Roles:" />
+				</div>
+				<p:selectCheckboxMenu id="Roles"
+					value="#{beanMantenedorUsuario.rolesSeleccionadas}" label="Roles"
+					filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+					required="true">
+					<f:selectItems value="#{beanMantenedorUsuario.listaRoles}"
+						var="role" itemLabel="#{role.rol}" itemValue="#{role.id}" />
+				</p:selectCheckboxMenu>
+			</pe:fluidGridItem>
+		</p:panelGrid>
+
+		<pe:fluidGridItem type="select" styleClass="select">
+			<div class="dynaFormLabel">
+				<p:outputLabel value="Avatar:" />
+			</div>
+			<p:fileUpload fileUploadListener="#{beanMantenedorUsuario.subir}"
+				mode="advanced" dragDropSupport="false" sizeLimit="100000"
+				fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+				cancelLabel="Limpiar" uploadLabel="Subir"
+				invalidFileMessage="Archivo no permitido"
+				invalidSizeMessage="El tamaño no es permitido" required="false"
+				label="Escoja" />
+		</pe:fluidGridItem>
+		<div class="EmptyBox60"></div>
+		<p:commandButton value="Limpiar"  styleClass="red-btn" style="margin-bottom:5px;" 
+			update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorUsuario.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorUsuario.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorUsuario.listaEntidades}"
+			var="usuario"  widgetVar="tablaUsuarios"
+			emptyMessage="#{beanMantenedorUsuario.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+			<p:column headerText="Avatar" width="5%">
+				
+				<p:graphicImage
+								rendered="#{usuario.imagenReferencia == null}"
+								name="general/usuarioDefault.png" library="imagenes" value="#"
+								style="outline: aliceblue; width: 33px; height: 33px; vertical-align: top; border-radius: 50%;" 
+				/>			
+				<o:graphicImage rendered="#{usuario.imagenReferencia != null}"
+					style="outline: aliceblue; width: 33px; height: 33px; vertical-align: top; border-radius: 50%;"
+					value="#{usuario.imagenReferencia}" dataURI="true"
+					id="imagenAvatar" />
+
+				<p:overlayPanel id="imagePanel" for="imagenAvatar" hideEffect="fade" rendered="#{usuario.imagenReferencia != null}">
+					<o:graphicImage
+						style="outline: aliceblue; width: 200px; height: 200px; vertical-align: top; border-radius: 10%;"
+						value="#{usuario.imagenReferencia}" dataURI="true"  rendered="#{usuario.imagenReferencia != null}"/>
+				</p:overlayPanel>
+			</p:column>
+
+			<p:column filterBy="#{usuario.usuario}" footerText="Usuario">
+				<h:outputText value="#{usuario.usuario}" />
+			</p:column>
+
+			<p:column headerText="Descripción">
+				<h:outputText value="#{usuario.lDescripcion}" />
+			</p:column>
+
+			<p:column headerText="Estado" width="12%" filterBy="#{usuario.estado}" filterMatchMode="exact" >
+				<f:facet name="filter">
+                <p:selectOneMenu onchange="PF('tablaUsuarios').filter()" >
+                    <f:selectItem itemLabel="ESTADO" itemValue="#{null}" noSelectionOption="true" />
+                   <f:selectItem itemLabel="ACTIVO" itemValue="A"/>
+                   <f:selectItem itemLabel="INACTIVO" itemValue="I"/>
+                </p:selectOneMenu>
+            </f:facet>
+				
+				<h:outputText
+					value="#{usuario.estado eq beanMantenedorUsuario.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+			<p:column headerText="Email">
+				<h:outputText value="#{usuario.correo}" />
+			</p:column>
+
+			<p:column headerText="Fecha Registro">
+				<h:outputText value="#{usuario.fechaRegistro}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorUsuario.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Acciones" width="10%">
+
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank"
+					style="border : none; background : none;">
+
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorUsuario.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorUsuario.nombreAtributoCambioEstado}"
+							value="#{usuario}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorUsuario.cambiarEstado}"
+						update="@form" process="@this">
+
+						<i class="fa fa-exchange Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorUsuario.nombreAtributoCambioEstado}"
+							value="#{usuario}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+					<p:commandLink id="rolesAsignados" title="Ver los roles asignados"
+						oncomplete="PF('dialogoMantenimientoRolesUsuario').show()"
+						actionListener="#{beanMantenedorUsuario.seleccionarEntidad}"
+						update=":#{p:component('dialogoMantenimientoRolesUsuario')}"
+						process="@this">
+
+						<i class="fa fa-group Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorUsuario.nombreAtributoCambioEstado}"
+							value="#{usuario}"></f:attribute>
+					</p:commandLink>
+
+					<p:commandLink id="contrasenia" title="Cambiar Contraseña"
+						oncomplete="PF('dialogoCambioContrasena').show()"
+						actionListener="#{beanMantenedorUsuario.seleccionarEntidad}"
+						update=":#{p:component('dialogoCambioContrasena')}"
+						process="@this">
+
+						<i class="fa fa-key Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorUsuario.nombreAtributoCambioEstado}"
+							value="#{usuario}"></f:attribute>
+					</p:commandLink>
+
+					<p:commandLink id="menu" title="Menú por usuario"
+						oncomplete="PF('dialogoVerMenu').show()"
+						actionListener="#{beanMantenedorUsuario.seleccionarEntidad}"
+						update=":#{p:component('dialogoVerMenu')}"
+						process="@this">
+
+						<i class="fa fa-sort-numeric-asc Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorUsuario.nombreAtributoCambioEstado}"
+							value="#{usuario}"></f:attribute>
+					</p:commandLink>
+
+				</p:panelGrid>
+
+
+			</p:column>
+		</p:dataTable>
+	</ui:define>
+
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorUsuario.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorUsuario.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<o:graphicImage
+				style="outline: aliceblue; width: 70px; height: 70px; vertical-align: top; border-radius: 10%;"
+				value="#{beanMantenedorUsuario.usuarioActual.imagenReferencia}"
+				rendered="#{beanMantenedorUsuario.usuarioActual.imagenReferencia != null}"
+				dataURI="true" />
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Usuario:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Usuario"
+					value="#{beanMantenedorUsuario.usuarioActual.usuario}"
+					onblur="ChangeCase(this);" required="true" id="Usuario"
+					readonly="true" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Descripción:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Descripción"
+					value="#{beanMantenedorUsuario.usuarioActual.lDescripcion}"
+					onblur="ChangeCase(this);" required="true" id="Descripción" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Email:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Email"
+					value="#{beanMantenedorUsuario.usuarioActual.correo}"
+					required="true" validatorMessage="Email incorrecto" id="Email">
+					<f:validateRegex
+						pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"></f:validateRegex>
+				</p:inputText>
+			</pe:fluidGridItem>
+
+
+		</p:panelGrid>
+
+		<pe:fluidGridItem type="select" styleClass="select">
+			<div class="dynaFormLabel">
+				<p:outputLabel value="Avatar:" />
+			</div>
+			<p:fileUpload fileUploadListener="#{beanMantenedorUsuario.subir}"
+				mode="advanced" dragDropSupport="false" sizeLimit="100000"
+				fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+				cancelLabel="Limpiar" uploadLabel="Subir"
+				invalidFileMessage="Archivo no permitido"
+				invalidSizeMessage="El tamaño no es permitido" required="false"
+				label="Seleccione" />
+		</pe:fluidGridItem>
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorUsuario.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorUsuario.eventoControlCierreDialogo}" />
+	</ui:define>
+
+	<ui:define name="ventanas_adicionales">
+		<p:dialog widgetVar="dialogoMantenimientoRolesUsuario" modal="true"
+			height="300" id="dialogoMantenimientoRolesUsuario" width="600"
+			header="Roles asignados para el usuario : #{beanMantenedorUsuario.entidadRegistrar.usuario}"
+			showHeader="true">
+			<p:panel style="border:0px !important; background:none;"
+				id="panelSeleccionRoles">
+				<p:pickList id="listaRoles"
+					value="#{beanMantenedorUsuario.listaSeleccionRol}" var="roles"
+					effect="bounce" itemValue="#{roles}" itemLabel="#{roles}"
+					showSourceControls="true" showTargetControls="true"
+					showCheckbox="true" responsive="true" showSourceFilter="true"
+					showTargetFilter="true" filterMatchMode="contains">
+
+					<f:facet name="sourceCaption">Roles por asignar</f:facet>
+					<f:facet name="targetCaption">Roles Asignados</f:facet>
+					<p:ajax event="transfer"
+						listener="#{beanMantenedorUsuario.controlTransferencia}"
+						update=":#{p:component('mensajeGlobal')}, :#{p:component('panelSeleccionRoles')}"
+						process="@this" />
+
+					<p:column style="width:90%;">
+						<h:outputText value="#{roles}" />
+					</p:column>
+				</p:pickList>
+			</p:panel>
+
+			<p:ajax event="close" update=":#{p:component('panel')}"
+				listener="#{beanMantenedorUsuario.eventoControlCierreDialogo}" />
+
+		</p:dialog>
+
+
+		<p:dialog widgetVar="dialogoCambioContrasena" modal="true"
+			height="100" id="dialogoCambioContrasena" width="350"
+			header="Cambios de contraseña para el usuario : #{beanMantenedorUsuario.entidadRegistrar.usuario}"
+			showHeader="true">
+			<p:panelGrid columns="2" layout="grid"
+				style="border:0px !important; background:none;" id="panelContrasena">
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Nueva Contraseña:" />
+					</div>
+					<p:password styleClass="Wid70"
+						value="#{beanMantenedorUsuario.lContraseniaNueva}" id="Clave" />
+				</pe:fluidGridItem>
+			</p:panelGrid>
+
+			<p:commandButton value="Actualizar" styleClass="CyanButton"
+				actionListener="#{beanMantenedorUsuario.guardarOActualizar}"
+				process=":#{p:component('dialogoCambioContrasena')}"
+				update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+				<p:confirm header="Confirmación"
+					message="Seguro que desea realizar esta operación?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:ajax event="close" update=":#{p:component('panel')}"
+				listener="#{beanMantenedorUsuario.eventoControlCierreDialogo}" />
+		</p:dialog>
+
+		<p:dialog widgetVar="dialogoVerMenu" modal="true" height="250"
+			id="dialogoVerMenu" width="400" 
+			header="Previsuzalización del menu para el usuario : #{beanMantenedorUsuario.entidadRegistrar.usuario}"
+			showHeader="true">
+			<p:scrollPanel style="width:350px;height:200px">
+			<div class="menu">
+				<p:panelMenu model="#{beanMantenedorUsuario.model}" 
+					id="papMenuPrevisualizado">
+				</p:panelMenu>
+			</div>
+			</p:scrollPanel>
+			<p:ajax event="close" update=":#{p:component('panel')}"
+				listener="#{beanMantenedorUsuario.eventoControlCierreDialogo}" />
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

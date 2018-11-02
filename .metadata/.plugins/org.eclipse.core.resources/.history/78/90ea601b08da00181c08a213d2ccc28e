@@ -1,0 +1,31 @@
+package edu.sae.modulo.servicio.escolar;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import edu.sae.modulo.dominio.escolar.SaeItemsCalificables;
+import edu.sae.modulo.eao.escolar.SaeCursoEAO;
+import edu.sae.modulo.eao.escolar.SaeItemsCalificablesEAO;
+import edu.sae.modulo.servicio.ServicioMantenedorControlAuditoria;
+
+@Stateless
+public class ServicioMantenimientoItemsCalificables 
+extends
+ServicioMantenedorControlAuditoria<SaeItemsCalificablesEAO, SaeItemsCalificables, Long>
+{
+
+	@EJB
+	private SaeItemsCalificablesEAO crud;
+	
+	@Override
+	protected void cargarConfiguracionServicio() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected SaeItemsCalificablesEAO getCrud() {
+		return crud;
+	}
+
+}

@@ -1,0 +1,11 @@
+package edu.sae.modulo.dominio.escolar;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "SAE_ITEMS_CALIFICABLES")
+public class SaeItemsCalificables 
+{
+
+}

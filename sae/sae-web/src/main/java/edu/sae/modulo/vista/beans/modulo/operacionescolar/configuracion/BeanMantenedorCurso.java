@@ -1,0 +1,57 @@
+package edu.sae.modulo.vista.beans.modulo.operacionescolar.configuracion;
+
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import edu.sae.modulo.dominio.escolar.SaeCurso;
+import edu.sae.modulo.eao.escolar.SaeCursoEAO;
+import edu.sae.modulo.librerias.vista.JsfUtil;
+import edu.sae.modulo.librerias.vista.beans.BeanMantenedorGenerico;
+import edu.sae.modulo.librerias.vista.beans.NombresEtiquetas;
+import edu.sae.modulo.servicio.escolar.ServicioMantenimientoCurso;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BeanMantenedorRol.
+ */
+@ManagedBean
+@ViewScoped
+public class BeanMantenedorCurso extends BeanMantenedorGenerico<ServicioMantenimientoCurso, Long, SaeCurso, SaeCursoEAO> {
+	
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
+	/** The servicio mantenedor. */
+	@EJB
+	private ServicioMantenimientoCurso servicioMantenedor;
+
+
+	public BeanMantenedorCurso() {
+		super(SaeCurso.class);
+	}
+
+	/**
+	 * Cargar opciones roles.
+	 *
+	 * @param pEntidadSeleccionada the entidad seleccionada
+	 */
+	
+	protected ServicioMantenimientoCurso getServicioMantenedor() {
+		return servicioMantenedor;
+	}
+
+	@Override
+	protected void cargarListaEtiquetas() {
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.TITULOPAGINA.toString(), "Mantenimiento Curso");
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.DESCRIPCIONPAGINA.toString(), "Mantenedor Curso");
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.AYUDAPAGINA.toString(), "Cree o edite los Cursos");
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.TAB.toString(), "Datos Cursos");
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.CABECERATABLA.toString(), "Cursos registrados");
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.CABECERADIALOGO.toString(), "Actualización Cursos");
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.CABECERAPANELDIALOGO.toString(), "Datos Cursos");
+		this.listaEtiquetasPantalla.put(NombresEtiquetas.TABLAVACIA.toString(), JsfUtil.MENSAJE_INFO_SINRESULTADO);
+	}
+
+	
+}

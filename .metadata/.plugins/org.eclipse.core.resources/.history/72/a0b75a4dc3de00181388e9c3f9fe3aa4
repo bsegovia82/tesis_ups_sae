@@ -1,0 +1,399 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor_notas.xhtml">
+
+
+	<ui:define name="head">
+		<title>#{beanMantenedorNotasMaterias.tituloPagina}</title>
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorNotasMaterias.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorNotasMaterias.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorNotasMaterias.ayudaPagina}
+	</ui:define>
+
+	<ui:define name="titulo_tab_cabecera">
+		<h:outputText value="Proceso de Registro de Notas" />
+	</ui:define>
+
+
+	<ui:define name="cab_formulario_cabecera">
+		<h:outputText value="Seleccione el estudiante" />
+	</ui:define>
+
+	<ui:define name="grid_formulario_cabecera">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panelCabecera">
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Curso:" />
+				</div>
+				
+				<p:selectOneMenu id="Curso"
+					value="#{beanMantenedorNotasMaterias.lCursoAnioSeleccionado.id}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="CURSO" noSelectionOption="true"/>
+					
+					<f:selectItems value="#{beanMantenedorNotasMaterias.listaCursoAnio}"
+						var="cursoAnio" itemLabel="#{cursoAnio.lCurso.lNombreCurso}" itemValue="#{cursoAnio.id}" />
+					
+					<p:ajax event="change"
+						update=":#{p:component('Materia')}"
+						listener="#{beanMantenedorNotasMaterias.cargarMaterias}" process="@this" />	
+						
+				</p:selectOneMenu>
+				
+			</pe:fluidGridItem>
+				
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Materia:" />
+				</div>
+				
+				<p:selectOneMenu id="Materia"
+					value="#{beanMantenedorNotasMaterias.lMateriaCursoAnioSeleccionado.id}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="MATERIA" noSelectionOption="true"/>
+					
+					<f:selectItems value="#{beanMantenedorNotasMaterias.listaMateriaCursoAnio}"
+						var="MateriaAnio" itemLabel="#{MateriaAnio.lMateria.lDescripcionMateria}" itemValue="#{MateriaAnio.id}" />
+						
+					
+					<p:ajax event="change"
+						update=":#{p:component('Docente')}, :#{p:component('tablaDatos')}"
+						listener="#{beanMantenedorNotasMaterias.cargarDocentes}" process=":#{p:component('panelCabecera')}" />		
+						
+				</p:selectOneMenu>
+				
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Quimestre:" />
+				</div>
+				<p:selectOneMenu id="Quimestre"
+					value="#{beanMantenedorNotasMaterias.lQuimestreSeleccionado}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="Primer Quimestre" itemValue="1" />
+					<f:selectItem itemLabel="Segundo Quimestre" itemValue="2" />
+				</p:selectOneMenu>	
+			</pe:fluidGridItem>	
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Docente:" />
+				</div>
+				
+				<h:outputText value="#{beanMantenedorNotasMaterias.lDocenteSeleccionado.nombreCompleto}" id="Docente" />
+				
+			</pe:fluidGridItem>
+			
+			
+			
+		</p:panelGrid>
+	</ui:define>
+
+	<ui:define name="grid_formulario">
+		<p:dataTable
+			value="#{beanMantenedorNotasMaterias.lListaNotasEstudiantes}"
+			var="notas"
+			emptyMessage="#{beanMantenedorNotasMaterias.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+			
+			<p:column >
+				<h:outputText value="#{notas.lEstudiante.nombreCompleto}" />
+			</p:column>	
+			
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPT1}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPT2}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPT3}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPT4}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPI1}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPI2}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPI3}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPI4}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPG1}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPG2}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPG3}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPG4}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPL1}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPL2}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPL3}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaPL4}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			
+			<p:column  width="3%">
+				<p:inputText value="#{notas.lNotaAporte}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasMaterias.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			
+			<p:columnGroup type="header">
+            <p:row>
+                <p:column rowspan="2" headerText="Estudiante"  width="60%"/>
+                <p:column colspan="4" headerText="Promedio Tareas" />
+                <p:column colspan="4" headerText="Promedio Invidual" />
+                <p:column colspan="4" headerText="Promedio Grupal" />
+                <p:column colspan="4" headerText="Promedio Lecciones" />
+                <p:column rowspan="2" headerText="Aportes" width="5%" />
+            </p:row>
+            <p:row>
+                <p:column headerText="NPT1" width="5%"/>
+                <p:column headerText="NPT2" width="5%"/>
+                <p:column headerText="NPT3" width="5%"/>
+                <p:column headerText="NPT4" width="5%"/>
+            
+            	<p:column headerText="NPI1" width="5%"/>
+                <p:column headerText="NPI2" width="5%"/>
+                <p:column headerText="NPI3" width="5%"/>
+                <p:column headerText="NPI4" width="5%"/>
+            
+            	<p:column headerText="NPG1" width="5%"/>
+                <p:column headerText="NPG2" width="5%"/>
+                <p:column headerText="NPG3" width="5%"/>
+                <p:column headerText="NPG4" width="5%"/>
+                
+                <p:column headerText="NPL1" width="5%"/>
+                <p:column headerText="NPL2" width="5%"/>
+                <p:column headerText="NPL3" width="5%"/>
+                <p:column headerText="NPL4" width="5%"/>
+            </p:row>
+        </p:columnGroup>
+			
+			
+			
+		</p:dataTable>	
+	</ui:define>
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorNotasMaterias.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorNotasMaterias.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="1" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+		</p:panelGrid>	
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorNotasMaterias.eventoControlCierreDialogo}" />
+	</ui:define>
+
+</ui:composition>

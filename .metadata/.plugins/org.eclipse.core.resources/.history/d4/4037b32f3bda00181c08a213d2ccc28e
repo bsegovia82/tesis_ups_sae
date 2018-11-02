@@ -1,0 +1,93 @@
+package edu.sae.modulo.dominio.escolar;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import edu.sae.modulo.librerias.dominio.entidades.base.EntidadBaseAuditable;
+
+@Entity
+@Table(name = "SAE_TIPO_ITEMS_CALIFICABLES")
+public class SaeTipoItemsCalificables extends EntidadBaseAuditable<Long> implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private String lDescripcionTipo;
+	private String lLiteralTipo;
+	
+	private SaeAnioLectivo lAnioLectivo;
+	
+	private SaeTipoItemsCalificables lItemPadre;
+	
+	private List<SaeTipoItemsCalificables> lListaHijos;
+	
+	@GeneratedValue(generator = "secTipoItemCalificable", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "secTipoItemCalificable", allocationSize = 1, initialValue = 1, 
+	sequenceName = "SEC_TIPO_ITEM_CAL")
+	@Id
+	@Column(name = "ID")
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public void setIdReferencia(Long idReferencia) {
+		super.setIdReferencia((Serializable)idReferencia);
+		
+	}
+	
+	public String getlDescripcionTipo() {
+		return lDescripcionTipo;
+	}
+
+	public void setlDescripcionTipo(String lDescripcionTipo) {
+		this.lDescripcionTipo = lDescripcionTipo;
+	}
+
+	
+	@ManyToOne
+	@JoinColumn(name="ID_TIPO_ITEM_PADRE")
+	public SaeTipoItemsCalificables getlItemPadre() {
+		return lItemPadre;
+	}
+
+	public void setlItemPadre(SaeTipoItemsCalificables lItemPadre) {
+		this.lItemPadre = lItemPadre;
+	}
+
+	@OneToMany(mappedBy="lItemPadre")
+	public List<SaeTipoItemsCalificables> getlListaHijos() {
+		return lListaHijos;
+	}
+
+	public void setlListaHijos(List<SaeTipoItemsCalificables> lListaHijos) {
+		this.lListaHijos = lListaHijos;
+	}
+
+	public String getlLiteralTipo() {
+		return lLiteralTipo;
+	}
+
+	public void setlLiteralTipo(String lLiteralTipo) {
+		this.lLiteralTipo = lLiteralTipo;
+	}
+
+	public SaeAnioLectivo getlAnioLectivo() {
+		return lAnioLectivo;
+	}
+
+	public void setlAnioLectivo(SaeAnioLectivo lAnioLectivo) {
+		this.lAnioLectivo = lAnioLectivo;
+	}
+	
+}

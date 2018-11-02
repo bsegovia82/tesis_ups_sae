@@ -1,0 +1,181 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>edu.salesiana.sae</groupId>
+    <artifactId>sae</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>sae-web</artifactId>
+  <packaging>war</packaging>
+  
+  <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+		<version.jboss.bom>8.2.1.Final</version.jboss.bom>
+		<version.compiler.plugin>3.1</version.compiler.plugin>
+		<version.surefire.plugin>2.16</version.surefire.plugin>
+		<version.war.plugin>2.5</version.war.plugin>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
+	
+	<dependencyManagement>
+		<dependencies>
+			
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>jboss-javaee-7.0-with-tools</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>jboss-javaee-7.0-with-hibernate</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<!-- First declare the APIs we depend on and need for compilation. All 
+			of them are provided by JBoss WildFly -->
+
+		<!-- Import the CDI API, we use provided scope as the API is included in 
+			JBoss WildFly -->
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the Common Annotations API (JSR-250), we use provided scope 
+			as the API is included in JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.annotation</groupId>
+			<artifactId>jboss-annotations-api_1.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the JAX-RS API, we use provided scope as the API is included 
+			in JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>jaxrs-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the JPA API, we use provided scope as the API is included in 
+			JBoss WildFly -->
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the EJB API, we use provided scope as the API is included in 
+			JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+			<version>2.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-web-api</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.omnifaces</groupId>
+			<artifactId>omnifaces</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Import the JSF API, we use provided scope as the API is included in 
+			JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.faces</groupId>
+			<artifactId>jboss-jsf-api_2.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Now we declare any tools needed -->
+
+		<!-- Annotation processor to generate the JPA 2.0 metamodel classes for 
+			typesafe criteria queries -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Annotation processor that raising compilation errors whenever constraint 
+			annotations are incorrectly used. -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator-annotation-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.20</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>5.6.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>edu.salesiana.sae</groupId>
+			<artifactId>sae-seguridad</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.primefaces.extensions</groupId>
+			<artifactId>primefaces-extensions</artifactId>
+			<version>6.2.8</version>
+		</dependency>
+
+
+	</dependencies>
+	
+</project>

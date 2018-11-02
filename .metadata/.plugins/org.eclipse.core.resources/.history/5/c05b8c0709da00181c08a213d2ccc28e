@@ -1,0 +1,65 @@
+package edu.sae.modulo.dominio.escolar;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import edu.sae.modulo.librerias.dominio.entidades.base.EntidadBaseAuditable;
+
+@Entity
+@Table(name = "SAE_NOTAS_ESTUDIANTES")
+public class SaeNotasEstudiante  extends EntidadBaseAuditable<Long> implements Serializable
+{
+
+	private static final long serialVersionUID = 1L;
+	private SaeEstudiante lEstudiante;
+	private SaeMateriaCursoAnio lMateriaCursoAnio;
+	private SaeItemsCalificables lItemCalificable;
+	private String lNota;
+	private String lRecomendacion;
+	
+	@GeneratedValue(generator = "secNotaEstudiantes", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "secNotaEstudiantes", allocationSize = 1, initialValue = 1, 
+	sequenceName = "SEC_NOTAS_ESTUDIANTE")
+	@Id
+	@Column(name = "ID")
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public void setIdReferencia(Long idReferencia) {
+		super.setIdReferencia((Serializable) idReferencia);
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "ID_ESTUDIANTE")
+	public SaeEstudiante getlEstudiante() {
+		return lEstudiante;
+	}
+
+	public void setlEstudiante(SaeEstudiante lEstudiante) {
+		this.lEstudiante = lEstudiante;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "ID_MATERIA_CURSO_ANIO")
+	public SaeMateriaCursoAnio getlMateriaCursoAnio() {
+		return lMateriaCursoAnio;
+	}
+
+	public void setlMateriaCursoAnio(SaeMateriaCursoAnio lMateriaCursoAnio) {
+		this.lMateriaCursoAnio = lMateriaCursoAnio;
+	}
+	
+	
+
+}

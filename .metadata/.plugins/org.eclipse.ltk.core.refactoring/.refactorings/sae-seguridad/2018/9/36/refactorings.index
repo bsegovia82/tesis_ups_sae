@@ -1,0 +1,6 @@
+1535948957866	Rename package 'edu.sast.modulo.librerias.generales'
+1535948968179	Rename package 'edu.sast.modulo.librerias.generales.excepciones'
+1535948976073	Rename package 'edu.sast.modulo.librerias.seguridad.loginmodule'
+1535948986530	Rename package 'edu.sast.modulo.librerias.seguridad.loginmodule.servicios'
+1535948999251	Rename package 'edu.sast.modulo.librerias.seguridad.loginmodule.servicios.jdbc'
+1535949008313	Rename package 'edu.sast.modulo.librerias.seguridad.loginmodule.servicios.ldap'

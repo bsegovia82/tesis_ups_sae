@@ -1,0 +1,181 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor_notas.xhtml">
+
+
+	<ui:define name="head">
+		<title>#{beanMantenedorNotasExamen.tituloPagina}</title>
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorNotasExamen.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorNotasExamen.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorNotasExamen.ayudaPagina}
+	</ui:define>
+
+	<ui:define name="titulo_tab_cabecera">
+		<h:outputText value="Proceso de Registro de Notas" />
+	</ui:define>
+
+
+	<ui:define name="cab_formulario_cabecera">
+		<h:outputText value="Seleccione el estudiante" />
+	</ui:define>
+
+	<ui:define name="grid_formulario_cabecera">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panelCabecera">
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Curso:" />
+				</div>
+				
+				<p:selectOneMenu id="Curso"
+					value="#{beanMantenedorNotasExamen.lCursoAnioSeleccionado.id}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="CURSO" noSelectionOption="true"/>
+					
+					<f:selectItems value="#{beanMantenedorNotasExamen.listaCursoAnio}"
+						var="cursoAnio" itemLabel="#{cursoAnio.lCurso.lNombreCurso}" itemValue="#{cursoAnio.id}" />
+					
+					<p:ajax event="change"
+						update=":#{p:component('Materia')}"
+						listener="#{beanMantenedorNotasExamen.cargarMaterias}" process="@this" />	
+						
+				</p:selectOneMenu>
+				
+			</pe:fluidGridItem>
+				
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Materia:" />
+				</div>
+				
+				<p:selectOneMenu id="Materia"
+					value="#{beanMantenedorNotasExamen.lMateriaCursoAnioSeleccionado.id}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="MATERIA" noSelectionOption="true"/>
+					
+					<f:selectItems value="#{beanMantenedorNotasExamen.listaMateriaCursoAnio}"
+						var="MateriaAnio" itemLabel="#{MateriaAnio.lMateria.lDescripcionMateria}" itemValue="#{MateriaAnio.id}" />
+						
+					
+					<p:ajax event="change"
+						update=":#{p:component('Docente')}, :#{p:component('tablaDatos')}"
+						listener="#{beanMantenedorNotasExamen.cargarDocentes}" process=":#{p:component('panelCabecera')}" />		
+						
+				</p:selectOneMenu>
+				
+			</pe:fluidGridItem>
+			
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Docente:" />
+				</div>
+				
+				<h:outputText value="#{beanMantenedorNotasExamen.lDocenteSeleccionado.nombreCompleto}" id="Docente" />
+				
+			</pe:fluidGridItem>
+			
+			
+			
+		</p:panelGrid>
+	</ui:define>
+
+	<ui:define name="grid_formulario">
+		<p:dataTable
+			value="#{beanMantenedorNotasExamen.lListaNotasEstudiantes}"
+			var="notas"
+			emptyMessage="#{beanMantenedorNotasExamen.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+			
+			<p:column >
+				<h:outputText value="#{notas.lEstudiante.nombreCompleto}" />
+			</p:column>	
+			
+			
+			
+			
+			
+			
+			<p:column  >
+				<p:inputText value="#{notas.lNotaExamen}">
+				<p:ajax event="blur"
+				listener="#{beanMantenedorNotasExamen.registrarNota}" 
+				process="@this"
+				update="@this" 
+				></p:ajax>
+				
+				<f:attribute name="NOTA" value="#{notas}">
+				</f:attribute> 
+				</p:inputText>
+			</p:column>	
+			
+			
+			<p:columnGroup type="header">
+            <p:row>
+                <p:column rowspan="2" headerText="Estudiante"  width="25%"/>
+                <p:column colspan="4" headerText="Promedio Tareas" />
+                <p:column colspan="4" headerText="Promedio Invidual" />
+                <p:column colspan="4" headerText="Promedio Grupal" />
+                <p:column colspan="4" headerText="Promedio Lecciones" />
+                <p:column rowspan="2" headerText="Aportes" width="5%" />
+            </p:row>
+            <p:row>
+                <p:column headerText="NPT1" />
+                <p:column headerText="NPT2" />
+                <p:column headerText="NPT3" />
+                <p:column headerText="NPT4" />
+            
+            	<p:column headerText="NPI1" />
+                <p:column headerText="NPI2" />
+                <p:column headerText="NPI3" />
+                <p:column headerText="NPI4" />
+            
+            	<p:column headerText="NPG1" />
+                <p:column headerText="NPG2" />
+                <p:column headerText="NPG3" />
+                <p:column headerText="NPG4" />
+                
+                <p:column headerText="NPL1" />
+                <p:column headerText="NPL2" />
+                <p:column headerText="NPL3" />
+                <p:column headerText="NPL4" />
+            </p:row>
+        </p:columnGroup>
+			
+			
+			
+		</p:dataTable>	
+	</ui:define>
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorNotasExamen.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorNotasExamen.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="1" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+		</p:panelGrid>	
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorNotasExamen.eventoControlCierreDialogo}" />
+	</ui:define>
+
+</ui:composition>

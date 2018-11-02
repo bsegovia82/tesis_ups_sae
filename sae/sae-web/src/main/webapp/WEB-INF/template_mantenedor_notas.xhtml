@@ -1,0 +1,164 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">Sistema de Administración Escolar</ui:define>
+
+	<ui:define name="head">
+
+		<style>
+body {
+	font-size: 10px;
+}
+
+body .ui-tabs .ui-tabs-panel {
+	padding: 4px 4px;
+}
+</style>
+
+	</ui:define>
+
+
+	<ui:define name="content">
+		<h:form id="Formulario" enctype="multipart/form-data">
+			<p:growl sticky="true" id="mensajeGlobal"></p:growl>
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12 ui-lg-12">
+					<!-- Left Side -->
+					<p:tabView id="DatosCabecera">
+						<p:tab id="contenedorCabecera">
+
+							<f:facet name="title">
+								<ui:insert name="titulo_tab_cabecera">
+									<h:outputText value="titulo del tab" />
+								</ui:insert>
+							</f:facet>
+							<div class="card no-margin">
+								<h1>
+									<ui:insert name="cab_formulario_cabecera">
+												Titulo del formulario
+									</ui:insert>
+								</h1>
+								<ui:insert name="grid_formulario_cabecera">
+								</ui:insert>
+							</div>
+						</p:tab>
+					</p:tabView>
+				</div>
+
+				<div class="ui-g-12 ui-lg-12">
+					<!-- Left Side -->
+					<p:tabView id="Datos">
+						<p:tab id="contenedor">
+
+							<f:facet name="title">
+								<ui:insert name="titulo_tab">
+									<h:outputText value="titulo del tab" />
+								</ui:insert>
+							</f:facet>
+							<div class="card no-margin">
+
+								<h1>
+									<ui:insert name="cab_formulario">
+												Titulo del formulario
+									</ui:insert>
+								</h1>
+								<ui:insert name="grid_formulario">
+									<p:panelGrid columns="3" layout="grid"
+										style="border:0px !important; background:none;"
+										styleClass="ui-panelgrid-blank">
+
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Identificación:" />
+											</div>
+											<p:inputText placeholder="Name" />
+										</pe:fluidGridItem>
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Identificación:" />
+											</div>
+											<p:inputText placeholder="Email" />
+										</pe:fluidGridItem>
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Identificación:" />
+											</div>
+											<p:inputText placeholder="Phone" />
+										</pe:fluidGridItem>
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Identificación:" />
+											</div>
+											<p:inputText placeholder="Disabled Input" disabled="true" />
+										</pe:fluidGridItem>
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Identificación:" />
+											</div>
+											<p:inputText placeholder="Address" />
+										</pe:fluidGridItem>
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Identificación:" />
+											</div>
+											<p:inputText placeholder="Id" />
+										</pe:fluidGridItem>
+									</p:panelGrid>
+								</ui:insert>
+							</div>
+						</p:tab>
+						<ui:insert name="nuevo_tab">
+						</ui:insert>
+					</p:tabView>
+				</div>
+			</div>
+
+			<p:dialog widgetVar="dialogoMantenimiento" modal="true" height="300"
+				id="dialogoMantenimiento" width="600">
+
+				<f:facet name="header">
+					<ui:insert name="cab_dialogo">
+						Titulo dialogo
+					</ui:insert>
+				</f:facet>
+				<p:panel id="PanelActualizar">
+					<f:facet name="header">
+						<ui:insert name="cab_panel_dialogo">
+
+						</ui:insert>
+					</f:facet>
+					<ui:insert name="datos_dialogo">
+
+					</ui:insert>
+				</p:panel>
+
+				<ui:insert name="control_dialogo">
+
+				</ui:insert>
+
+			</p:dialog>
+
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes GreenButton"
+					icon="ui-icon-check fa fa-check Fs14 White" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no RedButton"
+					icon="ui-icon-close fa fa-close Fs14 White" />
+			</p:confirmDialog>
+
+			<ui:insert name="ventanas_adicionales">
+
+			</ui:insert>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

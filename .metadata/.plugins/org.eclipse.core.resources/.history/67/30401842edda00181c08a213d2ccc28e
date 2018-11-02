@@ -1,0 +1,217 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pa="http://primefaces.org/apollo"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	>
+
+
+
+	<div class="topbar clearfix">
+
+		<p:graphicImage class="logo" library="apollo-layout"
+			name="images/logo-academia.png" />
+
+		<a id="menu-button" href="#"> <i class="fa fa-align-left"></i>
+		</a> <a href="#" class="profile"> <span class="username">#{beanLogin.usuarioSession.usuarioSession.usuario}</span>
+			<p:graphicImage
+				rendered="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia == null}"
+				name="images/usuarioDefault.png" library="apollo-layout" value="#"
+				styleClass="profile-image" style="border: 0 none" /> <o:graphicImage
+				rendered="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia != null}"
+				styleClass="profile-image"
+				value="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia}"
+				dataURI="true" style="border: 0 none" /> <i
+			class="fa fa-angle-down"></i>
+		</a>
+
+		<ul class="topbar-menu fadeInDown">
+
+
+			<li>
+			<h:form>
+					<a href="#"> <i class="topbar-icon fa fa-fw fa-user"></i> <span
+						class="topbar-item-name">Perfil</span>
+					</a>
+					<ul>
+						<li role="menuitem">
+						<p:commandLink title="Mi Perfil"
+							actionListener="#{beanMantenedorUsuario.actualizarEntidad}"
+							update=":#{p:component('dialogoMantenimientoPerfil')}"
+							process="@this">
+							<f:attribute
+								name="#{beanMantenedorUsuario.nombreAtributoCambioEstado}"
+								value="#{beanLogin.usuarioSession.usuarioSession}"></f:attribute>
+
+							<f:attribute
+								name="#{beanMantenedorUsuario.nombreAtributoDialogoAlterno}"
+								value="dialogoMantenimientoPerfil"></f:attribute>
+						
+						
+						<i
+								class="fa fa-fw fa-user"></i> <span>Mis Datos</span> <span
+								class="topbar-badge">3</span>
+						
+						</p:commandLink>
+						</li>
+						<li role="menuitem"><h:commandLink
+								action="#{beanLogin.logout}" title="Salir">
+								<i class="fa fa-fw fa-sign-out"></i>
+								<span>Logout</span>
+								<span class="topbar-badge">3</span>
+							</h:commandLink></li>
+					</ul>
+
+	<p:growl sticky="true" id="mensajeProfile"></p:growl>
+					<p:dialog widgetVar="dialogoMantenimientoPerfil" 
+						height="380" id="dialogoMantenimientoPerfil" width="600" responsive="true">
+						<f:facet name="header">
+							<h:outputText value="Actualización de Perfil" />
+						</f:facet>
+
+						<p:tabView>
+							<p:tab title="Mis datos">
+
+								<p:panel id="PanelActualizar">
+									<p:panelGrid columns="2" layout="grid"
+										style="border:0px !important; background:none;" id="panel">
+										<o:graphicImage
+											style="outline: aliceblue; width: 70px; height: 70px; vertical-align: top; border-radius: 10%;"
+											value="#{beanMantenedorUsuario.usuarioActual.imagenReferencia}"
+											rendered="#{beanMantenedorUsuario.usuarioActual.imagenReferencia != null}"
+											dataURI="true" />
+
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Usuario:" />
+											</div>
+											<p:inputText styleClass="Wid70" placeholder="Usuario"
+												value="#{beanMantenedorUsuario.usuarioActual.usuario}"
+												onblur="ChangeCase(this);" required="true" id="Usuario" readonly="true"/>
+										</pe:fluidGridItem>
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Descripción:" />
+											</div>
+											<p:inputText styleClass="Wid70" placeholder="Descripción"
+												value="#{beanMantenedorUsuario.usuarioActual.lDescripcion}"
+												onblur="ChangeCase(this);" required="true" id="Descripción" />
+										</pe:fluidGridItem>
+										<pe:fluidGridItem type="input">
+											<div class="dynaFormLabel">
+												<p:outputLabel value="* Email:" />
+											</div>
+											<p:inputText styleClass="Wid70" placeholder="Email"
+												value="#{beanMantenedorUsuario.usuarioActual.correo}"
+												required="true" validatorMessage="Email incorrecto"
+												id="Email">
+												<f:validateRegex
+													pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"></f:validateRegex>
+											</p:inputText>
+										</pe:fluidGridItem>
+
+
+									</p:panelGrid>
+
+									<pe:fluidGridItem type="select" styleClass="select">
+										<div class="dynaFormLabel">
+											<p:outputLabel value="Avatar:" />
+										</div>
+										<p:fileUpload
+											fileUploadListener="#{beanMantenedorUsuario.subir}"
+											mode="advanced" dragDropSupport="false" sizeLimit="100000"
+											fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+											cancelLabel="Cancelar" uploadLabel="Subir"
+											invalidFileMessage="Archivo no permitido"
+											invalidSizeMessage="El tamaño no es permitido"
+											required="false" label="Seleccione" />
+									</pe:fluidGridItem>
+
+									<p:commandButton value="Actualizar" styleClass="CyanButton"
+										actionListener="#{beanMantenedorUsuario.guardarOActualizar}"
+										process="@form"
+										update="@([id$=frmDatosProfile]), @([id$=mensajeProfile])">
+										<p:confirm header="Confirmación"
+											message="Seguro que desea realizar esta operación?"
+											icon="ui-icon-alert" />
+									</p:commandButton>
+								</p:panel>
+							</p:tab>
+							
+						</p:tabView>
+					</p:dialog>
+
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Si" type="button"
+							styleClass="ui-confirmdialog-yes GreenButton"
+							icon="ui-icon-check fa fa-check Fs14 White" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no RedButton"
+							icon="ui-icon-close fa fa-close Fs14 White" />
+					</p:confirmDialog>
+
+
+				</h:form></li>
+			<li><a href="#"> <i class="topbar-icon fa fa-fw fa-cog"></i>
+					<span class="topbar-item-name">Seguridad</span>
+			</a>
+				<ul>
+					<li role="menuitem"><a href="#" onclick="PF('dlg2').show();">
+							<i class="fa fa-fw fa-lock"></i> <span>Contraseña</span> <span
+							class="topbar-badge">3</span>
+					</a></li>
+				</ul></li>
+
+		</ul>
+
+
+	</div>
+
+
+
+	<p:dialog header="Cambio de clave" widgetVar="dlg2" modal="true"
+		resizable="false" closable="false"
+		visible="#{beanLogin.usuarioSession.usuarioSession.esNuevo eq 'S'}"
+		width="400">
+		<h:form>
+			<p:outputPanel id="cambClae">
+
+				<p:messages globalOnly="true" showDetail="false" closable="true"
+					id="mensajeGeneral"></p:messages>
+
+				<h:outputText value="Su primer inicio de sesión, cambie su clave"
+					rendered="#{beanLogin.usuarioSession.usuarioSession.esNuevo eq 'S'}" />
+				<p:panelGrid columns="2" layout="grid">
+
+					<h:outputText value="Usuario: " />
+					<h:outputText
+						value="#{beanLogin.usuarioSession.usuarioSession.usuario}" />
+					<h:outputText value="Clave: " />
+					<p:password feedback="false" value="#{beanLogin.cambContrase1}"></p:password>
+					<h:outputText value="Rep. Clave: " />
+					<p:password feedback="false" value="#{beanLogin.cambContrase2}"></p:password>
+					<f:facet name="footer">
+						<p:commandButton value="Aceptar"
+							actionListener="#{beanLogin.cambiarContrasenia}"
+							process="@([id$=cambClae])" update="@([id$=cambClae])"
+							partialSubmit="true">
+						</p:commandButton>
+						<p:commandButton value="Cerrar"
+							actionListener="#{beanLogin.cerrarVentana}" ajax="false">
+						</p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+	
+	
+	
+
+				
+
+</ui:composition>

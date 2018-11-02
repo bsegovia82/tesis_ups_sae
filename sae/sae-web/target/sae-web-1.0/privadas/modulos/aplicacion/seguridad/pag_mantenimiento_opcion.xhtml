@@ -1,0 +1,397 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorOpciones.tituloPagina}</title>
+		
+				
+		
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorOpciones.descripcionPagina}
+    </ui:define>
+
+
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorOpciones.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorOpciones.ayudaPagina}
+	</ui:define>
+
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Nombre Opción:" for="txtNombreOpcion" />
+				</div>
+
+				<p:inputText id="txtNombreOpcion"
+					value="#{beanMantenedorOpciones.entidadRegistrar.opcion}"
+					styleClass="Wid70" placeholder="Nombre Opción" required="true">
+					
+					<p:ajax event="blur"
+						update="txtNombreOpcion, :#{p:component('mensajeGlobal')} "
+						process="txtNombreOpcion"
+						listener="#{beanMantenedorOpciones.buscarOpcionCreada}" />
+					
+				</p:inputText>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Descripción Opción:" for="txtDescOpcion" />
+				</div>
+
+				<p:inputText id="txtDescOpcion"
+					value="#{beanMantenedorOpciones.entidadRegistrar.descripcion}"
+					styleClass="Wid70" placeholder="Descripción" required="true">
+					
+					<p:ajax event="blur"
+						update="@this"
+						process="@this" ></p:ajax>
+				</p:inputText>
+			</pe:fluidGridItem>
+			
+						<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Tipo Opción:" for="txtTipoOpcion" />
+				</div>
+
+				<p:selectOneMenu id="txtTipoOpcion"
+					value="#{beanMantenedorOpciones.lTipoOpcion}"  style="max-width: 50px; "
+					required="true" label="Seleccione la opcion">
+					<f:selectItem itemValue="MENU" itemLabel="MENU" />
+					<f:selectItem itemValue="SUBMENU" itemLabel="SUBMENU" />
+					<f:selectItem itemValue="OPCION" itemLabel="OPCION" />
+
+					<p:ajax event="change" update="@form"
+						process=":#{p:component('txtTipoOpcion')}" partialSubmit="true"
+						listener="#{beanMantenedorOpciones.presentarCamposAdicionales()}" />
+
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Ícono Opción:" for="txtIconoOpcion" />
+				</div>
+
+				<p:selectOneMenu id="txtIconoOpcion" value="#{beanMantenedorOpciones.entidadRegistrar.rutaimagen}"
+				autoWidth="false"   filter="true" filterMatchMode="contains" styleClass="Wid70"
+				 >
+					<f:selectItem  noSelectionOption="true" itemValue="" itemLabel="Seleccione" escapeItem="false"  />
+					<f:selectItems value="#{beanMantenedorOpciones.listaIconos}" var="icono"
+						itemValue="#{icono.lIconoFontPrimefaces}" 
+						itemLabel="&lt;i class='#{icono.lIconoFontPrimefaces}' &gt; #{icono.lIconoFontPrimefaces} &lt;/i&gt;"  
+						itemLabelEscaped="false"
+						itemDescription="#{icono.observacion}"
+						>
+						</f:selectItems>
+						<p:ajax event="change" process="@this" update="@this"></p:ajax>
+						
+				</p:selectOneMenu>
+
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Orden Opción:" for="txtOrdenOpcion" />
+				</div>
+
+				<p:spinner id="txtOrdenOpcion"
+					value="#{beanMantenedorOpciones.entidadRegistrar.orden}"
+					styleClass="Wid70" placeholder="Orden Opción" required="true"
+					min="1" max="99" />
+			</pe:fluidGridItem>
+
+			<p:outputPanel rendered="#{beanMantenedorOpciones.lCamposSubmenu}"
+				id="papOpcionesMenu">
+
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="Menú:" for="txtOpcionMenu" />
+					</div>
+
+					<p:selectOneMenu id="txtOpcionMenu"
+						value="#{beanMantenedorOpciones.lIdOpcion}" style="width:180px;"
+						required="true" label="Seleccione el menú">
+						<f:selectItems
+							value="#{beanMantenedorOpciones.lListaOpcionesPadre}" var="menu"
+							itemLabel="#{menu.opcion}" itemValue="#{menu.id}"></f:selectItems>
+					</p:selectOneMenu>
+				</pe:fluidGridItem>
+			</p:outputPanel>
+
+			<p:outputPanel rendered="#{beanMantenedorOpciones.lCamposOpcion}"
+				id="papOpcionesAccion">
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="Ruta Página:" for="txtAccion" />
+					</div>
+
+					<p:inputTextarea styleClass="Wid70" autoResize="false" rows="2"
+						placeholder="Ruta Página"
+						value="#{beanMantenedorOpciones.entidadRegistrar.accion}"
+						required="true" id="txtAccion">
+					</p:inputTextarea>
+				</pe:fluidGridItem>
+			</p:outputPanel>
+
+		</p:panelGrid>
+		<p:commandButton value="Limpiar" styleClass="red-btn" style="margin-bottom:5px;" 
+			update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorOpciones.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+
+
+
+	</ui:define>
+
+	<ui:define name="nuevo_tab">
+		<p:tab title="Previsualización Menú">
+			<div class="menu">
+				<p:panelMenu model="#{menuView.model}" id="papMenuPrevisualizado">
+				</p:panelMenu>
+			</div>
+
+		</p:tab>
+	</ui:define>
+
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorOpciones.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorOpciones.lListaCompletaOpciones}"
+			var="opcion"
+			emptyMessage="#{beanMantenedorOpciones.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false"
+			resizableColumns="true">
+
+			<p:column  headerText="Ícono"
+				width="5%"
+				>
+				<i class="#{opcion.rutaimagen}" />
+			</p:column>
+
+			<p:column filterBy="#{opcion.opcion}" footerText="Nombre opcion"
+				width="10%">
+				<h:outputText value="#{opcion.opcion}" />
+			</p:column>
+
+			<p:column headerText="Opción" width="4%">
+				<center>
+					<i title="#{opcion.accion}"
+						class="#{opcion.moduloPadre != null ? 'fa fa-info-circle fa-2x' : 'none' }"></i>
+				</center>
+			</p:column>
+
+			<p:column headerText="Descripción" width="12%">
+				<h:outputText value="#{opcion.descripcion}" />
+			</p:column>
+
+			<p:column headerText="Estado" width="6%">
+				<h:outputText
+					value="#{opcion.estado eq beanMantenedorOpciones.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+			<p:column headerText="Fecha Registro" width="14%">
+				<h:outputText value="#{opcion.fechaRegistro}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorOpciones.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Opción Padre" sortable="true"
+				sortBy="#{opcion.moduloPadre.opcion}" width="10%">
+				<h:outputText value="#{opcion.moduloPadre.opcion}"
+					rendered="#{opcion.moduloPadre != null}">
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Orden" sortable="true" sortBy="#{opcion.orden}"
+				width="6%">
+				<h:outputText value="#{opcion.orden}">
+				</h:outputText>
+			</p:column>
+
+
+
+
+			<p:column headerText="Acciones" width="10%">
+
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank"
+					style="border : none; background : none;">
+
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorOpciones.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorOpciones.nombreAtributoCambioEstado}"
+							value="#{opcion}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorOpciones.cambiarEstado}"
+						update="@form" process="@this">
+
+						<i class="fa fa-exchange Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorOpciones.nombreAtributoCambioEstado}"
+							value="#{opcion}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+				</p:panelGrid>
+			</p:column>
+		</p:dataTable>
+	</ui:define>
+
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorOpciones.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorOpciones.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Nombre Opción:" for="txtNombreOpcion" />
+				</div>
+
+				<p:inputText id="txtNombreOpcion"
+					value="#{beanMantenedorOpciones.entidadRegistrar.opcion}"
+					styleClass="Wid70" placeholder="Nombre Opción" required="true">
+				</p:inputText>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Descripción Opción:" for="txtDescOpcion" />
+				</div>
+
+				<p:inputText id="txtDescOpcion"
+					value="#{beanMantenedorOpciones.entidadRegistrar.descripcion}"
+					styleClass="Wid70" placeholder="Descripción" required="true">
+				</p:inputText>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Ícono Opción:" for="txtIconoOpcion" />
+				</div>
+
+				<p:selectOneMenu id="txtIconoOpcion" value="#{beanMantenedorOpciones.entidadRegistrar.rutaimagen}"
+				autoWidth="false"   filter="true" filterMatchMode="contains"  style="max-width: 150px; "
+				 >
+					<f:selectItem  noSelectionOption="true" itemValue="" itemLabel="Seleccione" escapeItem="false"  />
+					<f:selectItems value="#{beanMantenedorOpciones.listaIconos}" var="icono"
+						itemValue="#{icono.lIconoFontPrimefaces}" 
+						itemLabel="&lt;i class='#{icono.lIconoFontPrimefaces}' &gt; #{icono.lIconoFontPrimefaces} &lt;/i&gt;"  
+						itemLabelEscaped="false"
+						itemDescription="#{icono.observacion}"
+						
+						>
+						</f:selectItems>
+						<p:ajax event="change" process="@this" update="@this"></p:ajax>
+						
+				</p:selectOneMenu>
+
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Orden Opción:" for="txtOrdenOpcion" />
+				</div>
+
+				<p:spinner id="txtOrdenOpcion"
+					value="#{beanMantenedorOpciones.entidadRegistrar.orden}"
+					styleClass="Wid70" placeholder="Orden Opción" required="true"
+					min="1" max="99" />
+					
+				
+			</pe:fluidGridItem>
+
+			<p:outputPanel rendered="#{beanMantenedorOpciones.lCamposSubmenu}"
+				id="papOpcionesMenu">
+
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="Menú:" for="txtOpcionMenu" />
+					</div>
+
+					<p:selectOneMenu id="txtOpcionMenu"
+						value="#{beanMantenedorOpciones.lIdOpcion}" styleClass="Wid70"
+						required="true" label="Seleccione el menú" >
+						<f:selectItems  
+							value="#{beanMantenedorOpciones.lListaOpcionesPadre}" var="menu"
+							itemLabel="#{menu.opcion}" itemValue="#{menu.id}"></f:selectItems>
+					</p:selectOneMenu>
+				</pe:fluidGridItem>
+			</p:outputPanel>
+
+			<p:outputPanel rendered="#{beanMantenedorOpciones.lCamposOpcion}"
+				id="papOpcionesAccion">
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="Ruta Página:" for="txtAccion" />
+					</div>
+
+					<p:inputTextarea styleClass="Wid70" autoResize="false" rows="2"
+						placeholder="Ruta Página"
+						value="#{beanMantenedorOpciones.entidadRegistrar.accion}"
+						required="true" id="txtAccion">
+					</p:inputTextarea>
+				</pe:fluidGridItem>
+
+			</p:outputPanel>
+
+
+		</p:panelGrid>
+
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorOpciones.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('papMenuPrevisualizado')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorOpciones.eventoControlCierreDialogo}" />
+	</ui:define>
+
+</ui:composition>

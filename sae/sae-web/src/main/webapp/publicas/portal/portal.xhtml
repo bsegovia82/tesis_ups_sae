@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>Sistema de Administración Escolar</title>
+        <script type="text/javascript">
+        $(function() {
+            $('#menu-button').on('click', function(e) {
+                $('#menu').toggleClass('overlay-menu');
+                e.preventDefault();
+            });
+        });
+        </script>
+        <ui:insert name="head"/>
+    </h:head>
+
+    <h:body styleClass="landing-body">
+        
+        <div class="landing-wrapper">
+            <div class="landing-header">
+                <div class="landing-header-content clearfix">
+                    <p:graphicImage name="images/logo-academia.png" library="apollo-layout" />
+                    
+                    <a id="menu-button" href="#">
+                        <span class="fa fa-bars"></span>
+                    </a>
+                    <ul id="menu">
+                        <li><a href="#"><i class="menu-icon fa fa-home"></i>Introducción</a></li>
+                        <li><a href="#landing-feature"><i class="menu-icon fa fa-sitemap"></i>Características</a></li>
+                        <li><a href="#testimonials"><i class="menu-icon fa fa-book"></i>Clientes</a></li>
+                        <li>
+                        <a  onclick="window.location.href='#{request.contextPath}/publicas/login.jsf'" >
+                        <i class="menu-icon fa fa-video-camera"></i>Login</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="introduction">
+                <div class="introduction-content">
+                    <p class="title">Sistema de Administración Escolar</p>
+                    <p class="subtitle">Aplicación para la gestión operacional de unidades educativas</p>
+                     <p:button  value="Ingresar"
+                         href="/publicas/login.jsf"  target="login"
+                        
+                        />
+                </div>
+            </div>
+            
+            <div id="landing-feature">
+                <div class="landing-container">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-3 centerText">
+                            <i class="fa fa-cube fa-feature" aria-hidden="true"></i>
+                            <h2>Creative</h2>
+                            <p>
+                                Vitae potenti ante praesent <br/>
+                                a dui eget nibh eu quam <br/>
+                                accumsan porttitor tincidunt 
+                            </p>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-3 centerText">
+                            <i class="fa fa-leaf fa-feature" aria-hidden="true"></i>
+                            <h2>Responsive</h2>
+                            <p>
+                                Vitae potenti ante praesent <br/>
+                                a dui eget nibh eu quam <br/>
+                                accumsan porttitor tincidunt 
+                            </p>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-3 centerText">
+                            <i class="fa fa-magic fa-feature" aria-hidden="true"></i>
+                            <h2>Cross Browser</h2>
+                            <p>
+                                Vitae potenti ante praesent <br/>
+                                a dui eget nibh eu quam <br/>
+                                accumsan porttitor tincidunt 
+                            </p>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-3 centerText">
+                            <i class="fa fa-sitemap fa-feature" aria-hidden="true"></i>
+                            <h2>Well Organized</h2>
+                            <p>
+                                Vitae potenti ante praesent <br/>
+                                a dui eget nibh eu quam <br/>
+                                accumsan porttitor tincidunt 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+           
+            
+            <div id="testimonials">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="testimonials-container">
+                            <h1 class="testimonials-title">Testimonials</h1>
+                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium 
+                                doloremque.</p>
+                            <div class="testimonials-content">
+                                <p id="testimonials-text">
+                                    Beautiful design, straight - forward code, and a very flexible template.
+                                    Now I can easily build my own product landing page. Thanks 
+                                </p>
+                                <p:graphicImage name="images/landing_avatar.png" library="apollo-layout" />
+                                <p>Grace Montgomery</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+          
+            
+            <div class="landing-footer">
+                <div class="landing-footer-content">
+                    <div class="footer-top">
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <p:graphicImage name="images/landing_logo_footer.png" library="apollo-layout" styleClass="footer-logo"/>
+                                <p>Sistema de Administración Escolar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h:outputStylesheet name="css/layout-blue-light.css" library="apollo-layout" />
+        
+        <script>
+            var $this = this;
+            this.landingNav = $('#landing-nav');
+            this.landingMenuButton = $('#landing-menubar-button');
+            
+            this.landingMenuButton.on('click', function(e) {
+                $this.toggleMenu();
+                e.preventDefault();
+            });
+                        
+            function toggleMenu() {
+                if(this.landingNav.hasClass('landing-mobile-menu'))
+                    this.landingNav.removeClass('landing-mobile-menu');
+                else
+                    $this.landingNav.addClass('landing-mobile-menu');
+            }
+            
+            /* Scroll Animate */
+            $('a[href*="#"]').click(function(event) {
+                $this.toggleMenu(); // When scrolling close the menu.
+                
+                var target = $(this.hash);
+                var top = target.length ? target.offset().top - 80 : 0;
+
+                $('html, body').animate({
+                    scrollTop: top
+                }, 500); 
+                
+                event.preventDefault();
+            });
+        </script>
+    </h:body>
+
+</html>

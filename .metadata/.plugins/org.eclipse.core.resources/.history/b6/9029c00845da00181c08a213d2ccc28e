@@ -1,0 +1,225 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorTipoItemCalificable.tituloPagina}</title>
+	</ui:define>
+
+	<ui:define name="title">
+		#{beanMantenedorTipoItemCalificable.tituloPagina}
+	</ui:define>
+
+	<ui:define name="subheader">
+       #{beanMantenedorTipoItemCalificable.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorTipoItemCalificable.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorTipoItemCalificable.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Literal:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Literal"
+					value="#{beanMantenedorTipoItemCalificable.entidadRegistrar.lLiteralTipo}"
+					onblur="ChangeCase(this);" required="true" id="Literal" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Descripción:" />
+				</div>
+				<p:inputTextarea styleClass="Wid70" placeholder="Descripción"
+					required="true" id="descripcion"
+					value="#{beanMantenedorTipoItemCalificable.entidadRegistrar.lDescripcionTipo}"
+					onblur="ChangeCase(this);"
+					>
+
+				</p:inputTextarea>
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Curso:" />
+				</div>
+				
+				<p:selectOneMenu id="Curso"
+					value="#{beanMantenedorTipoItemCalificable.entidadRegistrar.lCursoAnio.id}"
+					styleClass="Wid100" required="true">
+					
+					<f:selectItems value="#{beanMantenedorTipoItemCalificable.lCursoAnio}"
+						var="cursoAnio" itemLabel="#{cursoAnio.lCurso.lNombreCurso}" itemValue="#{cursoAnio.id}" />
+				</p:selectOneMenu>
+
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Item Padre:" />
+				</div>
+				
+				<p:selectOneMenu id="ItemPadre"
+					value="#{beanMantenedorTipoItemCalificable.lTipoItemPadre}"
+					styleClass="Wid100" required="true">
+					
+					<f:selectItem itemLabel="ES PADRE" itemValue="-1" />
+					
+					<f:selectItems value="#{beanMantenedorTipoItemCalificable.lListaTipoItems}"
+						var="tipoItems" itemLabel="#{cursoAnio.lCurso.lNombreCurso}" itemValue="#{cursoAnio.id}" />
+				</p:selectOneMenu>
+				
+			</pe:fluidGridItem>
+		
+		
+		</p:panelGrid>
+		
+		
+		
+		<p:commandButton value="Limpiar" styleClass="red-btn"
+			style="margin-bottom:5px;" update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorTipoItemCalificable.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorTipoItemCalificable.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorTipoItemCalificable.listaEntidades}" var="curso"
+			emptyMessage="#{beanMantenedorTipoItemCalificable.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+			<p:column filterBy="#{curso.lNombreCurso}" footerText="Nombre Curso">
+				<h:outputText value="#{curso.lNombreCurso}" />  
+			</p:column>
+
+			<p:column headerText="Observacion">
+				<h:outputText value="#{curso.observacion}" />
+			</p:column>
+
+			<p:column headerText="Estado">
+				<h:outputText
+					value="#{curso.estado eq beanMantenedorTipoItemCalificable.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+			<p:column headerText="Fecha Registro">
+				<h:outputText value="#{curso.fechaRegistro}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorTipoItemCalificable.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Acciones" width="15%">
+
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank"
+					style="border : none; background : none;">
+
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorTipoItemCalificable.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorTipoItemCalificable.nombreAtributoCambioEstado}"
+							value="#{curso}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorTipoItemCalificable.cambiarEstado}"
+						update="@form" process="@this">
+
+						<i class="fa fa-exchange Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorTipoItemCalificable.nombreAtributoCambioEstado}"
+							value="#{curso}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+				</p:panelGrid>
+			</p:column>
+		</p:dataTable>
+	</ui:define>
+
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorTipoItemCalificable.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorTipoItemCalificable.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Nombre Curso:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Nombre Curso"
+					value="#{beanMantenedorTipoItemCalificable.entidadRegistrar.lNombreCurso}"
+					onblur="ChangeCase(this);" required="true" id="NombreCurso" />
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* observacion:" />
+				</div>
+				<p:inputTextarea styleClass="Wid70" placeholder="Observación"
+					required="true" id="observacion"
+					value="#{beanMantenedorTipoItemCalificable.entidadRegistrar.observacion}"
+					onblur="ChangeCase(this);"
+					>
+
+				</p:inputTextarea>
+
+				
+			</pe:fluidGridItem>
+				
+		</p:panelGrid>
+
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorTipoItemCalificable.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorTipoItemCalificable.eventoControlCierreDialogo}" />
+	</ui:define>
+
+	<ui:define name="ventanas_adicionales">
+
+	</ui:define>
+
+	<ui:define name="TITULO_PAGINA_NAVEGACION">
+  
+	</ui:define>
+
+</ui:composition>

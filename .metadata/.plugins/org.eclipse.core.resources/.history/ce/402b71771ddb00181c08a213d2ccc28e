@@ -1,0 +1,126 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor_notas.xhtml">
+
+
+	<ui:define name="head">
+		<title>#{beanMantenedorNotasMaterias.tituloPagina}</title>
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorNotasMaterias.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorNotasMaterias.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorNotasMaterias.ayudaPagina}
+	</ui:define>
+
+	<ui:define name="titulo_tab_cabecera">
+		<h:outputText value="Proceso de Registro de Notas" />
+	</ui:define>
+
+
+	<ui:define name="cab_formulario_cabecera">
+		<h:outputText value="Seleccione el estudiante" />
+	</ui:define>
+
+	<ui:define name="grid_formulario_cabecera">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panelCabecera">
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Curso:" />
+				</div>
+				
+				<p:selectOneMenu id="Curso"
+					value="#{beanMantenedorNotasMaterias.lCursoAnioSeleccionado.id}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="CURSO" noSelectionOption="true"/>
+					
+					<f:selectItems value="#{beanMantenedorNotasMaterias.listaCursoAnio}"
+						var="cursoAnio" itemLabel="#{cursoAnio.lCurso.lNombreCurso}" itemValue="#{cursoAnio.id}" />
+					
+					<p:ajax event="change"
+						update=":#{p:component('tablaDatos')}"
+						listener="#{beanMantenedorNotasPrimeroBasica.consulta}" process=":#{p:component('panelCabecera')}" />	
+						
+				</p:selectOneMenu>
+				
+			</pe:fluidGridItem>
+				
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Materia:" />
+				</div>
+				
+				<p:selectOneMenu id="Materia"
+					value="#{beanMantenedorNotasMaterias.lCursoAnioSeleccionado.id}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="CURSO" noSelectionOption="true"/>
+					
+					<f:selectItems value="#{beanMantenedorNotasMaterias.listaCursoAnio}"
+						var="cursoAnio" itemLabel="#{cursoAnio.lCurso.lNombreCurso}" itemValue="#{cursoAnio.id}" />
+					
+					<p:ajax event="change"
+						update=":#{p:component('tablaDatos')}"
+						listener="#{beanMantenedorNotasPrimeroBasica.consulta}" process=":#{p:component('panelCabecera')}" />	
+						
+				</p:selectOneMenu>
+				
+			</pe:fluidGridItem>
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Quimestre:" />
+				</div>
+				<p:selectOneMenu id="Quimestre"
+					value="#{beanMantenedorNotasMaterias.lQuimestreSeleccionado}"
+					styleClass="Wid100" required="true">
+					<f:selectItem itemLabel="Primer Quimestre" itemValue="1" />
+					<f:selectItem itemLabel="Segundo Quimestre" itemValue="2" />
+				</p:selectOneMenu>	
+			</pe:fluidGridItem>	
+			
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Docente:" />
+				</div>
+				
+				
+			</pe:fluidGridItem>
+			
+			
+			
+		</p:panelGrid>
+	</ui:define>
+
+	<ui:define name="grid_formulario">
+		
+	</ui:define>
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorNotasMaterias.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorNotasMaterias.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="1" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+		</p:panelGrid>	
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorNotasMaterias.eventoControlCierreDialogo}" />
+	</ui:define>
+
+</ui:composition>

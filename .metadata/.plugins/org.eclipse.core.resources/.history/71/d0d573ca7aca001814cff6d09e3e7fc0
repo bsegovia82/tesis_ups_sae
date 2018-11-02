@@ -1,0 +1,697 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorEstudiante.tituloPagina}</title>
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorEstudiante.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorEstudiante.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorEstudiante.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="1" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+			<p:panelGrid columns="2" layout="grid"
+				style="border:0px !important; background:none;" id="panelInterno">
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Identificación:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Identificación"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.persona.numeroDocumento}"
+						required="true"
+						validatorMessage="La identificación debe ser numérico"
+						id="Identificacion">
+						<f:validateRegex pattern="[0-9]+"></f:validateRegex>
+						<p:ajax event="blur"
+							update="panel, :#{p:component('mensajeGlobal')} "
+							process="Identificacion"
+							listener="#{beanMantenedorEstudiante.buscarPersonaIdentificacion}" />
+					</p:inputText>
+
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="select" styleClass="select">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Tipo Documento:" />
+					</div>
+					<p:selectOneMenu id="TipoDocumento"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.persona.tipoDocumentoIdentificacion.id}"
+						style="width:180px;" required="true">
+						<f:selectItem itemLabel="Seleccione" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItem itemLabel="CÓDIGO" itemValue="4" />
+					</p:selectOneMenu>
+
+				</pe:fluidGridItem>
+
+
+
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Nombres:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Nombres"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.persona.nombres}"
+						onblur="ChangeCase(this);" required="true" id="Nombres" />
+				</pe:fluidGridItem>
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Apellidos:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Apellidos"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.persona.apellidos}"
+						onblur="ChangeCase(this);" required="true" id="Apellidos" />
+				</pe:fluidGridItem>
+
+
+				<pe:fluidGridItem type="select" styleClass="select">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Género:" />
+					</div>
+					<p:selectOneMenu id="Genero"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.persona.genero}"
+						style="width:180px;" required="true">
+						<f:selectItem itemLabel="Seleccione" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItem itemLabel="FEMENINO" itemValue="F" />
+						<f:selectItem itemLabel="MASCULINO" itemValue="M" />
+					</p:selectOneMenu>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Email:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Email"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.persona.direccionCorreo}"
+						required="true" validatorMessage="Email incorrecto" id="Email">
+						<f:validateRegex
+							pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"></f:validateRegex>
+					</p:inputText>
+
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Teléfono Contacto:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Teléfono Contacto"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.persona.telefonoContacto}"
+						id="TelefonoContacto" required="true">
+						<f:validateRegex pattern="[0-9]+"></f:validateRegex>
+					</p:inputText>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Fecha Ingreso:" />
+					</div>
+					<p:calendar pattern="dd/MM/yyyy" id="FechaIngreso"
+						placeholder="Fecha Ingreso" required="true"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.fechaInicio}"></p:calendar>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Escuela Procede:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Escuela Procede"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.escuelaProcede}"
+						id="escuelaProcede">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Lugar Nacimiento:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Lugar Nacimiento"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.lugarNacimiento}"
+						id="lugarNacimiento">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Años:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Años"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.lAnios}"
+						id="lAnios">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Meses:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Meses"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.lMeses}"
+						id="lMeses">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Tipo Sangre:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Tipo Sangre"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.lTipoSanngre}"
+						id="lTipoSanngre">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Talla:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Talla"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.lTalla}"
+						id="lTalla">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Peso:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Peso"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.lPeso}"
+						id="lPeso">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+				<pe:fluidGridItem type="input">
+					<div class="dynaFormLabel">
+						<p:outputLabel value="* Número Carnet:" />
+					</div>
+					<p:inputText styleClass="Wid70" placeholder="Número Carnet"
+						value="#{beanMantenedorEstudiante.entidadRegistrar.lNumeroCarnet}"
+						id="lNumeroCarnet">
+
+					</p:inputText>
+				</pe:fluidGridItem>
+
+			</p:panelGrid>
+
+			<p:accordionPanel>
+				<p:tab title="Datos Discapacidad">
+					<p:panelGrid columns="2" layout="grid"
+						style="border:0px !important; background:none;" id="panelInterno2">
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Porcentaje:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Porcentaje"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lPorcentaje}"
+								id="lPorcentaje">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Tipo Discapacidad:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Tipo Discapacidad"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lTipoDiscapacidad}"
+								id="lTipoDiscapacidad">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Número Carpeta:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Número Carpeta"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lNumeroCarpeta}"
+								id="lNumeroCarpeta">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Dirección:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Dirección"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lDireccion}"
+								id="lDireccion">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Parroquia:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Parroquia"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lParroquia}"
+								id="lParroquia">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Teléfono Fijo:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Teléfono Fijo"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lTelefonoFijo}"
+								id="lTelefonoFijo">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Teléfono Emergencia:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Teléfono Emergencia"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lTelefonoEmergencia}"
+								id="lTelefonoEmergencia">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Teléfono Familiar:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Teléfono Familiar"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lTelefonoFamiliar}"
+								id="lTelefonoFamiliar">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Teléfono Celular Familiar:" />
+							</div>
+							<p:inputText styleClass="Wid70"
+								placeholder="Teléfono Celular Familiar"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lCelularFamiliar}"
+								id="lCelularFamiliar">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Parentesco:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Parentesco"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lParentesco}"
+								id="lParentesco">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Becado Municipio:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Becado Municipio"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lBecadoMunicipio}"
+								id="lBecadoMunicipio">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Becado Dirección Estudio:" />
+							</div>
+							<p:inputText styleClass="Wid70"
+								placeholder="Becado Dirección Estudio"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lBecadoDireccionEstudio}"
+								id="lBecadoDireccionEstudio">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Becado Otro:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Becado Otro"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lOtro}"
+								id="lOtro">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+					</p:panelGrid>
+				</p:tab>
+
+
+				<p:tab title="Datos Madre">
+
+					<p:panelGrid columns="2" layout="grid"
+						style="border:0px !important; background:none;" id="panelInterno3">
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Nombre Madre:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Nombre Madre"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lNombreCompletoMadre}"
+								id="lNombreCompletoMadre">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Vive con el niño:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Vive con el niño"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lViveNinioMadre}"
+								id="lViveNinioMadre">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Cédula Madre:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Cédula Madre"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lCedulaMadre}"
+								id="lCedulaMadre">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Estado Civil:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Estado Civil"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lEstadoCivilMadre}"
+								id="lEstadoCivilMadre">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Instrucción Madre:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Instrucción Madre"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lInstrccionMadre}"
+								id="lInstrccionMadre">
+
+							</p:inputText>
+						</pe:fluidGridItem>
+
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Ocupación Madre:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Ocupación Madre"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lOcupacionMadre}"
+								id="lOcupacionMadre">
+							</p:inputText>
+						</pe:fluidGridItem>
+						
+						<pe:fluidGridItem type="input">
+							<div class="dynaFormLabel">
+								<p:outputLabel value="* Teléfono Madre:" />
+							</div>
+							<p:inputText styleClass="Wid70" placeholder="Teléfono Madre"
+								value="#{beanMantenedorEstudiante.entidadRegistrar.lTelefonoTrabajoMadre}"
+								id="lTelefonoTrabajoMadre">
+							</p:inputText>
+						</pe:fluidGridItem>
+
+					</p:panelGrid>
+				</p:tab>
+
+				<p:tab title="Datos Padre">
+					<pe:fluidGridItem type="input">
+						<div class="dynaFormLabel">
+							<p:outputLabel value="* Meses:" />
+						</div>
+
+
+
+					</pe:fluidGridItem>
+				</p:tab>
+
+				<p:tab title="Datos Representante">
+					<pe:fluidGridItem type="input">
+						<div class="dynaFormLabel">
+							<p:outputLabel value="* Meses:" />
+						</div>
+
+
+
+					</pe:fluidGridItem>
+				</p:tab>
+			</p:accordionPanel>
+		</p:panelGrid>
+		<p:commandButton value="Cancelar" styleClass="danger-btn"
+			style="margin-bottom:5px;" update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorEstudiante.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorEstudiante.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorEstudiante.listaEntidades}"
+			var="empleado"
+			emptyMessage="#{beanMantenedorEstudiante.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+			<p:column
+				filterBy="#{empleado.persona.nombres.concat(' ').concat(empleado.persona.apellidos)}"
+				footerText="Nombres Completos">
+				<h:outputText
+					value="#{empleado.persona.nombres.concat(' ').concat(empleado.persona.apellidos)}" />
+			</p:column>
+
+
+
+			<p:column filterBy="#{empleado.persona.numeroDocumento}"
+				footerText="Identificación" width="15%">
+				<h:outputText value="#{empleado.persona.numeroDocumento}" />
+			</p:column>
+
+
+			<p:column headerText="Correo" width="15%">
+				<h:outputText value="#{empleado.persona.direccionCorreo}" />
+			</p:column>
+
+			<p:column headerText="Teléfono" width="12%">
+				<h:outputText value="#{empleado.persona.telefonoContacto}" />
+			</p:column>
+
+			<p:column headerText="Estado" width="10%">
+				<h:outputText
+					value="#{empleado.estado eq beanMantenedorEstudiante.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+
+
+
+			<p:column headerText="Acciones" width="12%">
+				<p:panelGrid columns="2" layout="grid"
+					style="border : none; background : none;">
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorEstudiante.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this">
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorEstudiante.nombreAtributoCambioEstado}"
+							value="#{empleado}"></f:attribute>
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorEstudiante.cambiarEstado}"
+						update="@form" process="@this">
+						<i class="fa fa-toggle-off Fs20 BoldGray DispBlock"> </i>
+						<f:attribute
+							name="#{beanMantenedorEstudiante.nombreAtributoCambioEstado}"
+							value="#{empleado}"></f:attribute>
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+				</p:panelGrid>
+			</p:column>
+		</p:dataTable>
+
+
+		<p:dialog
+			header="Asignacion de Zona para el Vendedor : #{beanAsignacionZona.lEmpleado.persona.nombres}"
+			widgetVar="zonas" modal="true" height="100">
+			<p:panelGrid columns="3" id="papAsignacion">
+
+				<h:outputText value="Seleccione la Zona:" />
+				<p:selectOneMenu value="#{beanAsignacionZona.lZona.id}">
+
+					<f:selectItem itemLabel="SELECCIONE" noSelectionOption="true"
+						itemValue="-1" />
+					<f:selectItems value="#{beanAsignacionZona.lListaZona}" var="zona"
+						itemLabel="#{zona.nombre}" itemValue="#{zona.id}">
+					</f:selectItems>
+
+				</p:selectOneMenu>
+
+				<p:commandButton value="Asignar"
+					actionListener="#{beanAsignacionZona.asignar()}"
+					process="papAsignacion" update="@form"></p:commandButton>
+
+			</p:panelGrid>
+		</p:dialog>
+
+
+	</ui:define>
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorEstudiante.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorEstudiante.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Nombres:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Nombres"
+					value="#{beanMantenedorEstudiante.entidadRegistrar.persona.nombres}"
+					onblur="ChangeCase(this);" required="true" id="Nombres" />
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Apellidos:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Apellidos"
+					value="#{beanMantenedorEstudiante.entidadRegistrar.persona.apellidos}"
+					onblur="ChangeCase(this);" required="true" id="Apellidos" />
+
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Tipo Documento:" />
+				</div>
+				<p:selectOneMenu id="TipoDocumento"
+					value="#{beanMantenedorEstudiante.entidadRegistrar.persona.tipoDocumentoIdentificacion.id}"
+					style="width:200px;" required="true">
+					<f:selectItem itemLabel="Seleccione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="CÉDULA" itemValue="1" />
+					<f:selectItem itemLabel="RUC" itemValue="2" />
+					<f:selectItem itemLabel="PASAPORTE" itemValue="3" />
+				</p:selectOneMenu>
+
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Identificación:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Identificación"
+					value="#{beanMantenedorEstudiante.entidadRegistrar.persona.numeroDocumento}"
+					required="true"
+					validatorMessage="La identificación debe ser numérico"
+					id="Identificacion">
+					<f:validateRegex pattern="[0-9]+"></f:validateRegex>
+				</p:inputText>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="select" styleClass="select">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Genero:" />
+				</div>
+				<p:selectOneMenu id="Genero"
+					value="#{beanMantenedorEstudiante.entidadRegistrar.persona.genero}"
+					style="width:200px;" required="true">
+					<f:selectItem itemLabel="Seleccione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="FEMENINO" itemValue="F" />
+					<f:selectItem itemLabel="MASCULINO" itemValue="M" />
+				</p:selectOneMenu>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Email:" />
+				</div>
+
+				<p:inputText styleClass="Wid70" placeholder="Email"
+					value="#{beanMantenedorEstudiante.entidadRegistrar.persona.direccionCorreo}"
+					required="true" validatorMessage="Email incorrecto" id="Email">
+					<f:validateRegex
+						pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"></f:validateRegex>
+				</p:inputText>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Teléfono Contacto:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Teléfono Contacto"
+					value="#{beanMantenedorEstudiante.entidadRegistrar.persona.telefonoContacto}"
+					id="TelefonoContacto" required="true">
+					<f:validateRegex pattern="[0-9]+"></f:validateRegex>
+				</p:inputText>
+			</pe:fluidGridItem>
+		</p:panelGrid>
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorEstudiante.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+
+	</ui:define>
+
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}"
+			listener="#{beanMantenedorEstudiante.eventoControlCierreDialogo}" />
+	</ui:define>
+
+</ui:composition>

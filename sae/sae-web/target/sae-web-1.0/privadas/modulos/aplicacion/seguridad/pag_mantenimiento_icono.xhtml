@@ -1,0 +1,200 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template_mantenedor.xhtml">
+
+	<ui:define name="head">
+		<title>#{beanMantenedorIcono.tituloPagina}</title>
+	</ui:define>
+	<ui:define name="subheader">
+       #{beanMantenedorIcono.descripcionPagina}
+    </ui:define>
+
+	<ui:define name="titulo_tab">
+		#{beanMantenedorIcono.tab}
+	</ui:define>
+	<ui:define name="cab_formulario">		
+		#{beanMantenedorIcono.ayudaPagina}
+	</ui:define>
+	<ui:define name="grid_formulario">
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Ícono Font Awesome:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Ícono"
+					value="#{beanMantenedorIcono.entidadRegistrar.lIconoFontPrimefaces}"
+					required="true" id="txtIcono"  >
+					<p:ajax event="blur" process="@this" update=":#{p:component('txtId')}"></p:ajax>
+					</p:inputText>
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Previsualización:" />
+				</div>
+				<h:panelGrid id="txtId">
+				<i class="#{beanMantenedorIcono.entidadRegistrar.lIconoFontPrimefaces}"></i>
+				</h:panelGrid>
+			</pe:fluidGridItem>
+
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Referecia Ícono:" />
+				</div>
+				<p:inputTextarea styleClass="Wid70" placeholder="Referecia Ícono"
+					value="#{beanMantenedorIcono.entidadRegistrar.observacion}"
+					onblur="ChangeCase(this);" required="false" id="txtReferenciaIconoUso" />
+			</pe:fluidGridItem>
+		</p:panelGrid>
+		<p:commandButton value="Limpiar" styleClass="red-btn" style="margin-bottom:5px;" 
+			update="panel" process="@this">
+			<p:resetInput target="panel" />
+		</p:commandButton>
+		<p:commandButton value="Registrar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorIcono.guardarOActualizar}"
+			process="contenedor"
+			update=":#{p:component('panel')}, :#{p:component('contenedor')}, :#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}, :#{p:component('dialogoMantenimiento')}" />
+	</ui:define>
+
+	<ui:define name="cab_tabla_datos">
+		#{beanMantenedorIcono.cabeceraTabla}
+	</ui:define>
+
+	<ui:define name="tabla_datos">
+		<p:dataTable value="#{beanMantenedorIcono.listaEntidades}" var="icono"
+			emptyMessage="#{beanMantenedorIcono.mensajeTablaVacia}" rows="8"
+			reflow="true" paginator="true" paginatorPosition="bottom"
+			id="tablaDatos" paginatorAlwaysVisible="false">
+
+
+			<p:column headerText="Nombre Ícono" width="20%">
+				<h:outputText value="#{icono.lIconoFontPrimefaces}" />
+			</p:column>
+
+			<p:column headerText="Previsualización" width="20%">
+				<center>
+				<i  class="#{icono.lIconoFontPrimefaces}"></i>
+				</center>
+			</p:column>
+
+			<p:column headerText="Referencia Ícono" width="20%">
+				<h:outputText value="#{icono.observacion}" />
+			</p:column>
+
+			<p:column headerText="Estado" width="8%">
+				<h:outputText
+					value="#{icono.estado eq beanMantenedorIcono.estadoActivo?'ACTIVO':'INACTIVO'}" />
+			</p:column>
+
+
+			<p:column headerText="Fecha Registro">
+				<h:outputText value="#{icono.fechaRegistro}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+						timeZone="#{beanMantenedorIcono.currentTimeZone}" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Acciones" width="10%">
+
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank"
+					style="border : none; background : none;">
+
+					<p:commandLink title="Actualizar"
+						actionListener="#{beanMantenedorIcono.actualizarEntidad}"
+						update=":#{p:component('dialogoMantenimiento')}" process="@this" partialSubmit="true">
+
+						<i class="fa fa-edit Fs20 BoldGray DispBlock"> </i>
+
+						<f:attribute
+							name="#{beanMantenedorIcono.nombreAtributoCambioEstado}"
+							value="#{icono}"></f:attribute>
+
+					</p:commandLink>
+					<p:commandLink title="Cambiar Estado"
+						actionListener="#{beanMantenedorIcono.cambiarEstado}"
+						update="@form" process="@this">
+
+						<i class="fa fa-exchange Fs20 BoldGray DispBlock">
+						</i>  
+						<f:attribute
+							name="#{beanMantenedorIcono.nombreAtributoCambioEstado}"
+							value="#{icono}"></f:attribute>
+
+						<p:confirm header="Confirmación"
+							message="Seguro que desea realizar esta operación?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+				</p:panelGrid>
+			</p:column>
+
+		</p:dataTable>
+	</ui:define>
+
+	<ui:define name="cab_dialogo">
+		#{beanMantenedorIcono.cabeceraDialogo}
+	</ui:define>
+	<ui:define name="cab_panel_dialogo">
+#{beanMantenedorIcono.cabeceraPanelDialogo}
+</ui:define>
+
+	<ui:define name="datos_dialogo">
+		
+		
+	
+		<p:panelGrid columns="2" layout="grid"
+			style="border:0px !important; background:none;" id="panel">
+
+		<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="* Ícono Font Awesome:" />
+				</div>
+				<p:inputText styleClass="Wid70" placeholder="Ícono"
+					value="#{beanMantenedorIcono.entidadRegistrar.lIconoFontPrimefaces}"
+					required="true" id="txtIcono"  >
+					<p:ajax event="blur" process="@this" update=":#{p:component('txtId')}"></p:ajax>
+					</p:inputText>
+			</pe:fluidGridItem>
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Previsualización:" />
+				</div>
+				<h:panelGrid id="txtId">
+				<i class="#{beanMantenedorIcono.entidadRegistrar.lIconoFontPrimefaces}"></i>
+				</h:panelGrid>
+			</pe:fluidGridItem>
+
+			<pe:fluidGridItem type="input">
+				<div class="dynaFormLabel">
+					<p:outputLabel value="Referecia Ícono:" />
+				</div>
+				<p:inputTextarea styleClass="Wid70" placeholder="Referecia Ícono"
+					value="#{beanMantenedorIcono.entidadRegistrar.observacion}"
+					onblur="ChangeCase(this);" required="false" id="txtReferenciaIcono" />
+			</pe:fluidGridItem>
+			
+		</p:panelGrid>
+
+		<p:commandButton value="Actualizar" styleClass="CyanButton"
+			actionListener="#{beanMantenedorIcono.guardarOActualizar}"
+			process="PanelActualizar"
+			update=":#{p:component('mensajeGlobal')}, :#{p:component('tablaDatos')}">
+			<p:confirm header="Confirmación"
+				message="Seguro que desea realizar esta operación?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+
+	</ui:define>
+	
+	<ui:define name="control_dialogo">
+		<p:ajax event="close" update=":#{p:component('panel')}, :#{p:component('txtId')}" listener="#{beanMantenedorIcono.eventoControlCierreDialogo}" />
+	</ui:define>
+	
+	
+
+</ui:composition>

@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pa="http://primefaces.org/apollo"
+	xmlns:o="http://omnifaces.org/ui">
+
+
+
+	<div class="topbar clearfix">
+		
+			<p:graphicImage class="logo" library="apollo-layout"
+				name="images/logo-academia.png" />
+
+			<a id="menu-button" href="#"> <i class="fa fa-align-left"></i>
+			</a>
+
+			<a href="#" class="profile"> <span class="username">#{beanLogin.usuarioSession.usuarioSession.usuario}</span>
+				<p:graphicImage
+					rendered="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia == null}"
+					name="images/usuarioDefault.png" library="apollo-layout" value="#"
+					styleClass="profile-image" style="border: 0 none" /> <o:graphicImage
+					rendered="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia != null}"
+					styleClass="profile-image"
+					value="#{beanLogin.usuarioSession.usuarioSession.imagenReferencia}"
+					dataURI="true" style="border: 0 none" /> <i
+				class="fa fa-angle-down"></i>
+			</a>
+
+			<ul class="topbar-menu fadeInDown">
+			
+			
+				<li>
+				<h:form>
+				<a href="#"> <i class="topbar-icon fa fa-fw fa-user"></i>
+						<span class="topbar-item-name">Perfil</span>
+				</a>
+					<ul>
+						<li role="menuitem"><a href="#"> <i
+								class="fa fa-fw fa-user"></i> <span>Mis Datos</span> <span
+								class="topbar-badge">3</span>
+						</a></li>
+						<li role="menuitem"><h:commandLink
+								action="#{beanLogin.logout}" title="Salir">
+								<i class="fa fa-fw fa-sign-out"></i>
+								<span>Logout</span>
+								<span class="topbar-badge">3</span>
+							</h:commandLink></li>
+					</ul>
+					
+				
+					
+				</h:form>	
+				</li>
+				<li><a href="#"> <i class="topbar-icon fa fa-fw fa-cog"></i>
+						<span class="topbar-item-name">Seguridad</span>
+				</a>
+					<ul>
+						<li role="menuitem"><a href="#" onclick="PF('dlg2').show();"> <i
+								class="fa fa-fw fa-lock"></i> <span>Contraseña</span> <span
+								class="topbar-badge">3</span>
+						</a></li>
+					</ul>
+					
+				</li>
+				
+			</ul>
+			
+		
+	</div>
+
+  
+
+<p:dialog header="Cambio de clave" widgetVar="dlg2" modal="true"
+			resizable="false" closable="false"
+			visible="#{beanLogin.usuarioSession.usuarioSession.esNuevo eq 'S'}"
+			width="400">
+			<h:form> 
+			<p:outputPanel id="cambClae">
+
+				<p:messages globalOnly="true" showDetail="false" closable="true"
+					id="mensajeGeneral"></p:messages>
+
+				<h:outputText value="Su primer inicio de sesión, cambie su clave"
+					rendered="#{beanLogin.usuarioSession.usuarioSession.esNuevo eq 'S'}" />
+				<p:panelGrid columns="2" layout="grid">
+
+					<h:outputText value="Usuario: " />
+					<h:outputText
+						value="#{beanLogin.usuarioSession.usuarioSession.usuario}" />
+					<h:outputText value="Clave: " />
+					<p:password feedback="false" value="#{beanLogin.cambContrase1}"></p:password>
+					<h:outputText value="Rep. Clave: " />
+					<p:password feedback="false" value="#{beanLogin.cambContrase2}"></p:password>
+					<f:facet name="footer">
+						<p:commandButton value="Aceptar"
+							actionListener="#{beanLogin.cambiarContrasenia}"
+							process="@([id$=cambClae])" update="@([id$=cambClae])"
+							partialSubmit="true">
+						</p:commandButton>
+						<p:commandButton value="Cerrar"
+							actionListener="#{beanLogin.cerrarVentana}" ajax="false">
+						</p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</p:outputPanel>
+</h:form>
+		</p:dialog>	
+
+
+</ui:composition>
